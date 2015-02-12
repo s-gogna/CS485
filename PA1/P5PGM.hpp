@@ -24,5 +24,5 @@ class P5PGM
 	private:
 		int width;
 		int height;
-		byte image**;
+		byte data**;
 };
