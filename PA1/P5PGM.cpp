@@ -74,12 +74,12 @@ bool P5PGM::write( const char* filename )
 	}
 }
 
-bool P5PGM::convolve1DVert( double* vec )
+bool P5PGM::convolveVert( double* vec )
 {
 
 }
 
-bool P5PGM::convolve2DVert( double* vec )
+bool P5PGM::convolveHoriz( double* vec )
 {
 
 }
@@ -88,7 +88,3 @@ bool P5PGM::convolve2D( double** mask )
 {
 
 }
-
-		int width;
-		int height;
-		byte image**;

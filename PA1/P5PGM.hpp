@@ -15,9 +15,9 @@ class P5PGM
 
 		bool write( const char* );
 
-		bool convolve1DVert( double* );
+		bool convolveVert( double* );
 
-		bool convolve1DHoriz( double* );
+		bool convolveHoriz( double* );
 
 		bool convolve2D( double** );
 
