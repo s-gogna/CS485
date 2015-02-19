@@ -90,6 +90,28 @@ P5PGM::P5PGM( const P5PGM& src )
 	}
 }
 
+P5PGM& P5PGM::operator=( const P5PGM& src )
+{
+	// Deep copy the fields
+	width = src.width;
+	height = src.height;
+	if( data != NULL ) delete[] data;
+
+	// Deep copy the image
+	data = new float*[ height ];
+	for( int i = 0; i < height; ++i )
+	{
+		// Allocate the row
+		data[i] = new float[ width ];
+
+		// Copy
+		for( int j = 0; j < width; ++j )
+		{
+			data[i][j] = src.data[i][j];
+		}
+	}
+}
+
 bool P5PGM::write( const char* filename )
 {
 	// Initialize variables
@@ -284,6 +306,25 @@ P5PGM P5PGM::threshold( int tVal )
 			{
 				result.data[i][j] = data[i][j];
 			}
+		}
+	}
+
+	// Return
+	return result;
+}
+
+P5PGM P5PGM::downscaleBy2()
+{
+	// Initialize variables
+	P5PGM result( height / 2, width / 2 );
+
+	// Loop through the image
+	for( int i = 0; i < height; i += 2 )
+	{
+		for( int j = 0; j < width; j += 2 )
+		{
+			// Average 4 pixels and assign
+			result.data[ i/2 ][ j/2 ] = (data[i][j] + data[i+1][j] + data[i][j+1] + data[i+1][j+1]) / 4.0;
 		}
 	}
 

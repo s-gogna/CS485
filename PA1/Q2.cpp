@@ -15,7 +15,7 @@ int main( int argc, char** argv )
 		return -1;
 	}
 
-	// Create the mask
+	// Set the threshold value
 	float thresh = atof( argv[1] );
 
 	// Read the image

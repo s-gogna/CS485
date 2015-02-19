@@ -23,6 +23,7 @@ class P5PGM
 		P5PGM( int, int );
 		P5PGM( const char* );
 		P5PGM( const P5PGM& );
+		P5PGM& operator=( const P5PGM& );
 		~P5PGM();
 
 		bool write( const char* );
@@ -34,6 +35,8 @@ class P5PGM
 		P5PGM convolve2D( int, const float[3][3] );
 		
 		P5PGM threshold( int );
+
+		P5PGM downscaleBy2();
 
 		static P5PGM magnitudeOf( const P5PGM&, const P5PGM& );
 		
