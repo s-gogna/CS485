@@ -1,21 +1,12 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
-#include <string>
 #include "P5PGM.cpp"
 using namespace std;
 
 // Main
 int main( int argc, char** argv )
 {
-	// Check the arguments
-/*	if( argc < 2 )
-	{
-		// Output an error and return
-		cout << "Invalid console arguments. Do ./program sigma" << endl;
-		return -1;
-	}*/
-
 	// Create the mask
 	Mask1D mask( 1.0 );
 
