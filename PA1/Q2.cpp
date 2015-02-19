@@ -23,8 +23,8 @@ int main( int argc, char** argv )
 	P5PGM sf( "sf.pgm" );
 
 	// Define the sobel operators
-	const float horizSobel[3][3] = { { -1, 0, 1 }, {-2, 0, 2}, {-1, 0, 1} };
-	const float vertSobel[3][3] = { { -1, -2, -1 }, {0, 0, 0}, {1, 2, 1} };
+	const float vertSobel[3][3] = { { -1, 0, 1 }, {-2, 0, 2}, {-1, 0, 1} };
+	const float horizSobel[3][3] = { { -1, -2, -1 }, {0, 0, 0}, {1, 2, 1} };
 
 	///////////////////////////////////////////////////////////////////////
 	// Part A, B, C, D

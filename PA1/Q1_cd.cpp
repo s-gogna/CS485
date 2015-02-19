@@ -19,17 +19,20 @@ int main( int argc, char** argv )
 	Mask1D m1( atof( argv[1] ) );
 
 	// Read the image
+	char buf[100];
 	P5PGM lenna( "lenna.pgm" );
 
 	///////////////////////////////////////////////////////////////////////
 	// Part C
 	///////////////////////////////////////////////////////////////////////
-	lenna.convolve2D( m1 ).write( "Lenna2D.pgm" );
+	sprintf( buf, "Lenna_%f_2D.pgm", m1.sigma );
+	lenna.convolve2D( m1 ).write( buf );
 
 	///////////////////////////////////////////////////////////////////////
 	// Part D
 	///////////////////////////////////////////////////////////////////////
-	lenna.convolve1D( m1 ).write( "Lenna1D.pgm" );
+	sprintf( buf, "Lenna_%f_1D.pgm", m1.sigma );
+	lenna.convolve1D( m1 ).write( buf );
 
 	// Return
 	return 0;

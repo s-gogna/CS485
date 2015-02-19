@@ -360,7 +360,8 @@ P5PGM P5PGM::directionOf( const P5PGM& one, const P5PGM& two )
 	{
 		for( int j = 0; j < one.width; ++j )
 		{
-			result.data[i][j] = atan2( one.data[i][j], two.data[i][j] );
+			float rad = atan2( one.data[i][j], two.data[i][j] );
+			result.data[i][j] = 255 * ((rad + 3.14159) / (2*3.14159));
 		}
 	}
 

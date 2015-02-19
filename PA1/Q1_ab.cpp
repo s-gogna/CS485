@@ -9,7 +9,7 @@ void printDataNormalized( const float* src )
 {
 	for( int i = 0; i < 128; ++i )
 	{
-		cout << '<' << i << "> " << src[i] * 255 << endl;
+		cout << '<' << i << ">\t" << src[i] * 255 << endl;
 	}
 }
 
