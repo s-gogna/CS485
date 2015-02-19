@@ -1,10 +1,18 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
-#include "Gauss_masks.c"
+#include "P5PGM.cpp"
 using namespace std;
 
 // Function Definitions
+void printDataNormalized( const float* src )
+{
+	for( int i = 0; i < 128; ++i )
+	{
+		cout << '<' << i << "> " << src[i] * 255 << endl;
+	}
+}
+
 void readFromDataFile( float* dest )
 {
 	// Open the file
@@ -21,10 +29,10 @@ void readFromDataFile( float* dest )
 	fin.close();
 }
 
-float* convolve( const float* original, int maskSize, const float* mask )
+float* convolve( const float* original, const Mask1D& mask )
 {
 	// Initialize variables
-	int halfMaskSize = maskSize / 2;
+	int halfSize = mask.size / 2;
 	float* result = new float[ 128 ];
 
 	// Loop
@@ -32,12 +40,12 @@ float* convolve( const float* original, int maskSize, const float* mask )
 	{
 		// Loop
 		result[ i ] = 0.0;
-		for( int j = -halfMaskSize; j <= halfMaskSize; ++j )
+		for( int j = -halfSize; j <= halfSize; ++j )
 		{
 			// Check position
-			if( i + j >= 0 && i+ j <= 127 )
+			if( (i + j) >= 0 && (i + j) <= 127 )
 			{
-				result[ i ] += original[ i + j ] * mask[ j + halfMaskSize ];
+				result[ i ] += original[ i + j ] * mask.vec[ j + halfSize ];
 			}
 		}
 	}
@@ -50,11 +58,7 @@ float* convolve( const float* original, int maskSize, const float* mask )
 int main( int argc, char** argv )
 {
 	// Declare variables
-	int sigma = 0;
-	float sigmaFloat = 0.0;
 	float original[ 128 ];
-	float* mask;
-	float* res;
 
 	// Check the arguments
 	if( argc < 2 )
@@ -64,12 +68,8 @@ int main( int argc, char** argv )
 		return -1;
 	}
 
-	// Convert the argument
-	sigma = atoi( argv[1] );
-	mask = new float[ sigma * 5 ];
-
-	// Build the mask
-	Gauss( sigma, sigma * 5, mask );
+	// Create the mask
+	Mask1D m1( atof( argv[1] ) );
 
 	// Read the data
 	readFromDataFile( original );
@@ -78,53 +78,19 @@ int main( int argc, char** argv )
 	// Part A
 	///////////////////////////////////////////////////////////////////////
 	cout << "=== Convolve by Input Sigma ===" << endl;
-	res = convolve( original, sigma * 5, mask );
-	for( int i = 0; i < 128; ++i )
-	{
-		cout << "Num " << i << ": ";
-		cout << res[i] * 255.0 << endl;
-	}
-	delete[] res;
+	printDataNormalized( convolve( original, m1 ) );
 
 	///////////////////////////////////////////////////////////////////////
 	// Part B
 	///////////////////////////////////////////////////////////////////////
 	cout << "=== Convolve by Sigma=5 Twice ===" << endl;
-	sigmaFloat = 5.0;
-	sigma = int(sigmaFloat);
-
-	delete[] mask;
-	mask = new float[ sigma * 5 ];
-	Gauss( sigmaFloat, int(sigmaFloat * 5), mask );
-
-	res = convolve( original, sigma * 5, mask );
-	float* resTwo = convolve( res, sigma * 5, mask );
-	for( int i = 0; i < 128; ++i )
-	{
-		cout << "Num " << i << ": ";
-		cout << resTwo[i] * 255.0 << endl;
-	}
-	delete[] resTwo;
-	delete[] res;
-
+	Mask1D m2( 5.0 );
+	printDataNormalized( convolve( convolve( original, m2 ), m2 ) );
 
 	cout << "=== Convolve by Sigma=5*root(2) ===" << endl;
-	sigmaFloat = 5 * sqrt(2.0);
-	sigma = int(sigmaFloat);
+	Mask1D m3( 5.0 * 1.41421356237 );
+	printDataNormalized( convolve( original, m3 ) );
 
-	delete[] mask;
-	mask = new float[ sigma * 5 ];
-	Gauss( sigmaFloat, int(sigmaFloat * 5), mask );
-
-	res = convolve( original, sigma * 5, mask );
-	for( int i = 0; i < 128; ++i )
-	{
-		cout << "Num " << i << ": ";
-		cout << res[i] * 255.0 << endl;
-	}
-
-	// Deallocate
-	delete[] mask;
-	delete[] res;
+	// Return
 	return 0;
 }
