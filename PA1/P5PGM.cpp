@@ -169,6 +169,7 @@ P5PGM P5PGM::convolve1D( const Mask1D& mask )
 P5PGM P5PGM::convolve2D( const Mask1D& mask )
 {
 	// Initialize variables
+	int halfSize = mask.size / 2;
 	P5PGM result = *this;
 
 	// Allocate the space for a 2D Mask
@@ -179,7 +180,40 @@ P5PGM P5PGM::convolve2D( const Mask1D& mask )
 	}
 
 	// Multiply the 1D mask by itself to get the 2D Mask
-	// TODO
+	for( int i = 0; i < mask.size; ++i )
+	{
+		// Loop
+		for( int j = 0; j < mask.size; ++j )
+		{
+			// Initialize value
+			maskMatrix[ i ][ j ] = mask.vec[i] * mask.vec[j];
+		}
+	}
+
+	// Convolve
+	for( int i = 0; i < height; ++i )
+	{
+		for( int j = 0; j < width; ++j )
+		{
+			// Initialize value to 0
+			result.data[ i ][ j ] = 0.0;
+
+			// Loop through the mask matrix
+			for( int k = -halfSize; k <= halfSize; ++k )
+			{
+				for( int l = -halfSize; l <= halfSize; ++l )
+				{
+					// Check if within bounds
+					if( (i + k) >= 0 && (i + k) < height && (j + l) >= 0 && (j + l) < width )
+					{
+						result.data[ i ][ j ] += 
+							data[ i + k ][ j + l ] * 
+							maskMatrix[ k + halfSize ][ l + halfSize ];
+					}
+				}
+			}
+		}
+	}
 
 	// Return
 	return result;
