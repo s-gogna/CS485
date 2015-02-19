@@ -20,6 +20,7 @@ struct Mask1D
 class P5PGM
 {
 	public:
+		P5PGM( int, int );
 		P5PGM( const char* );
 		P5PGM( const P5PGM& );
 		~P5PGM();
@@ -29,6 +30,14 @@ class P5PGM
 		P5PGM convolve1D( const Mask1D& );
 
 		P5PGM convolve2D( const Mask1D& );
+
+		P5PGM convolve2D( int, const float[3][3] );
+		
+		P5PGM threshold( int );
+
+		static P5PGM magnitudeOf( const P5PGM&, const P5PGM& );
+		
+		static P5PGM directionOf( const P5PGM&, const P5PGM& );
 
 	private:
 		int width;

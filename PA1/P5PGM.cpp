@@ -22,6 +22,18 @@ Mask1D::~Mask1D()
 	vec = NULL;
 }
 
+P5PGM::P5PGM( int h, int w )
+{
+	// Save and allocate
+	height = h;
+	width = w;
+	data = new float*[ h ];
+	for( int i = 0; i < height; ++i )
+	{
+		data[i] = new float[ width ];
+	}
+}
+
 P5PGM::P5PGM( const char* filename )
 {
 	// Initialize variables
@@ -212,6 +224,102 @@ P5PGM P5PGM::convolve2D( const Mask1D& mask )
 					}
 				}
 			}
+		}
+	}
+
+	// Return
+	return result;
+}
+
+P5PGM P5PGM::convolve2D( int maskN, const float mask[3][3] )
+{
+	// Initialize variables
+	int halfSize = maskN / 2;
+	P5PGM result = *this;
+
+	// Convolve
+	for( int i = 0; i < height; ++i )
+	{
+		for( int j = 0; j < width; ++j )
+		{
+			// Initialize value to 0
+			result.data[ i ][ j ] = 0.0;
+
+			// Loop through the mask matrix
+			for( int k = -halfSize; k <= halfSize; ++k )
+			{
+				for( int l = -halfSize; l <= halfSize; ++l )
+				{
+					// Check if within bounds
+					if( (i + k) >= 0 && (i + k) < height && (j + l) >= 0 && (j + l) < width )
+					{
+						result.data[ i ][ j ] += 
+							data[ i + k ][ j + l ] * 
+							mask[ k + halfSize ][ l + halfSize ];
+					}
+				}
+			}
+		}
+	}
+
+	// Return
+	return result;
+}
+
+P5PGM P5PGM::threshold( int tVal )
+{
+	// Initialize variables
+	P5PGM result( height, width );
+
+	// Loop through the image
+	for( int i = 0; i < height; ++i )
+	{
+		for( int j = 0; j < width; ++j )
+		{
+			if( data[i][j] <= tVal )
+			{
+				result.data[i][j] = 0.0;
+			}
+			else
+			{
+				result.data[i][j] = data[i][j];
+			}
+		}
+	}
+
+	// Return
+	return result;
+}
+
+P5PGM P5PGM::magnitudeOf( const P5PGM& one, const P5PGM& two )
+{
+	// Initialize a new P5PGM
+	P5PGM result( one.height, one.width );
+
+	// Loop through every point in the two images
+	for( int i = 0; i < one.height; ++i )
+	{
+		for( int j = 0; j < one.width; ++j )
+		{
+			result.data[i][j] = sqrt( (one.data[i][j] * one.data[i][j]) + (two.data[i][j] * two.data[i][j] ) );
+		}
+	}
+
+	// Return
+	return result;
+}
+
+P5PGM P5PGM::directionOf( const P5PGM& one, const P5PGM& two )
+{
+	// Initialize a new P5PGM
+	P5PGM result( one.height, one.width );
+
+	// Loop through every point in the two images
+	for( int i = 0; i < one.height; ++i )
+	{
+		for( int j = 0; j < one.width; ++j )
+		{
+			result.data[i][j] = atan2( one.data[i][j], two.data[i][j] );
 		}
 	}
 
