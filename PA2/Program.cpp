@@ -46,10 +46,6 @@ int main( int argc, char** argv )
 	}
 
 	// Read the image and set the coordinates
-	char buf[128];
-	int len = strlen( argv[1] );
-	strcpy( buf, argv[1] );
-	strcpy( buf + len - 4, "_Result.pgm" );
 	source.read( argv[1] );
 
 	A[1][1] = atof( argv[2] );
@@ -115,6 +111,10 @@ int main( int argc, char** argv )
 	}
 
 	// Get the new filename
+	char buf[128];
+	int len = strlen( argv[1] );
+	strcpy( buf, argv[1] );
+	strcpy( buf + len - 4, "_Result.pgm" );
 	dest.write( buf );
 
 	// Return success

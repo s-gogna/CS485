@@ -1,4 +1,4 @@
-main: clean
+main:
 	g++ Program.cpp -g
 s1: main
 	echo "Executing on S1"
