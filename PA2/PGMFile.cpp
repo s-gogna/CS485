@@ -37,6 +37,10 @@ PGMFile::PGMFile( int h, int w )
 	for( int i = 0; i < height; ++i )
 	{
 		data[i] = new byte[width];
+		for( int j = 0; j < width; ++j )
+		{
+			data[i][j] = 0;
+		}
 	}
 }
 

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string.h>
 #include "PGMFile.cpp"
 #include "solve_system.c"
 #include "svbksb.c"
@@ -46,7 +47,7 @@ int main( int argc, char** argv )
 
 	// Read the image and set the coordinates
 	source.read( argv[1] );
-	
+
 	A[1][1] = atof( argv[2] );
 	A[1][2] = atof( argv[3] );
 	A[1][3] = 1.0;
@@ -63,8 +64,8 @@ int main( int argc, char** argv )
 	A[4][2] = atof( argv[9] );
 	A[4][3] = 1.0;
 
-cout << "Matrix A" << endl;
-for( int i = 1; i<= 4; ++i ) { for( int j = 1; j <= 3; ++j ) cout << A[i][j] << ' '; cout << endl; }
+//cout << "Matrix A" << endl;
+//for( int i = 1; i<= 4; ++i ) { for( int j = 1; j <= 3; ++j ) cout << A[i][j] << ' '; cout << endl; }
 
 	// Solve
 	solve_system( 4, 3, A, coef_x, B_x );
@@ -73,19 +74,34 @@ for( int i = 1; i<= 4; ++i ) { for( int j = 1; j <= 3; ++j ) cout << A[i][j] << 
 cout << "Vector X, Vector Y" << endl;
 for( int i = 1; i < 4; ++i ) cout << coef_x[i] << ',' << coef_y[i] << endl;
 
-	cout << img.at(0,0) << endl;
-
 	// Start writing to the destination image
 	for( int i = 0; i < 112; ++i )
 	{
 		for( int j = 0; j < 92; ++j )
 		{
 			// Get the remapped value
-			int final_x = j * coef_x[1] + source
-			int final_y = 
+			int final_x = (j * coef_x[1]) + (i * coef_x[2]) + coef_x[3];
+			int final_y = (j * coef_y[1]) + (i * coef_y[2]) + coef_y[3];
+
+			// If the point is within bounds
+			if( final_x >= 0 && final_x < 40 && final_y >= 0 && final_y < 48 )
+			{
+				// Set the pixel value at that point
+				dest.at( final_y, final_x ) = source.at( i, j );
+			}
 		}
 	}
+
+	char buf[128];
+	int len = strlen( argv[1] );
+	strcpy( buf, argv[1] );
+	strcpy( buf + len - 4, "_Result.pgm" );
+	dest.write( buf );
 
 	// Return success
 	return 0;
 }
+
+
+
+
