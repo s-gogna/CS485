@@ -46,6 +46,10 @@ int main( int argc, char** argv )
 	}
 
 	// Read the image and set the coordinates
+	char buf[128];
+	int len = strlen( argv[1] );
+	strcpy( buf, argv[1] );
+	strcpy( buf + len - 4, "_Result.pgm" );
 	source.read( argv[1] );
 
 	A[1][1] = atof( argv[2] );
@@ -64,15 +68,24 @@ int main( int argc, char** argv )
 	A[4][2] = atof( argv[9] );
 	A[4][3] = 1.0;
 
-//cout << "Matrix A" << endl;
-//for( int i = 1; i<= 4; ++i ) { for( int j = 1; j <= 3; ++j ) cout << A[i][j] << ' '; cout << endl; }
+	// Output the A Matrix
+	cout << "The 'A' Matrix" << endl;
+	for( int i = 1; i <= 4; ++i )
+	{
+		cout << "[ " << A[i][1] << ' ' << A[i][2] << ' ' << A[i][3] << " ]" << endl;
+	}
 
 	// Solve
 	solve_system( 4, 3, A, coef_x, B_x );
 	solve_system( 4, 3, A, coef_y, B_y );
 
-cout << "Vector X, Vector Y" << endl;
-for( int i = 1; i < 4; ++i ) cout << coef_x[i] << ',' << coef_y[i] << endl;
+	// Output the resulting X Matrix
+	cout << "The 'X' Matrix (Affine Transformation Parameters)" << endl;
+	cout << "[ X_Vector Y_Vector ]" << endl;
+	for( int i = 1; i < 4; ++i )
+	{
+		cout << "[ " << coef_x[i] << ' ' << coef_y[i] << " ]" << endl; 
+	}
 
 	// Start writing to the destination image
 	for( int i = 0; i < 112; ++i )
@@ -86,16 +99,22 @@ for( int i = 1; i < 4; ++i ) cout << coef_x[i] << ',' << coef_y[i] << endl;
 			// If the point is within bounds
 			if( final_x >= 0 && final_x < 40 && final_y >= 0 && final_y < 48 )
 			{
-				// Set the pixel value at that point
-				dest.at( final_y, final_x ) = source.at( i, j );
+				// Check if the pixel has not been written to
+				if( dest.at( final_y, final_x ) == 0 )
+				{
+					// Set the pixel value at that point
+					dest.at( final_y, final_x ) = source.at( i, j );
+				}
+				else
+				{
+					// Average between the current and the new
+					dest.at( final_y, final_x ) = (source.at( i, j ) + dest.at( final_y, final_x )) / 2;
+				}
 			}
 		}
 	}
 
-	char buf[128];
-	int len = strlen( argv[1] );
-	strcpy( buf, argv[1] );
-	strcpy( buf + len - 4, "_Result.pgm" );
+	// Get the new filename
 	dest.write( buf );
 
 	// Return success

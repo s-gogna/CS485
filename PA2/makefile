@@ -1,7 +1,7 @@
-main:
-	-rm a.out
+main: clean
 	g++ Program.cpp -g
 s1: main
+	echo "Executing on S1"
 	./a.out img/S1_1.pgm 26 51 63 50 45 70 44 88
 	./a.out img/S1_2.pgm 30 44 75 43 65 66 58 85
 	./a.out img/S1_3.pgm 24 48 62 45 44 72 45 89
@@ -13,6 +13,7 @@ s1: main
 	./a.out img/S1_9.pgm 30 37 67 35 52 48 52 72
 	./a.out img/S1_10.pgm 34 52 74 49 63 76 60 90
 s2: main
+	echo "Executing on S2"
 	./a.out img/S2_1.pgm 24 51 59 53 40 68 39 87 
 	./a.out img/S2_2.pgm 35 50 68 51 54 66 53 86
 	./a.out img/S2_3.pgm 20 50 56 53 33 66 33 86
@@ -23,3 +24,6 @@ s2: main
 	./a.out img/S2_8.pgm 21 50 57 51 35 66 35 87
 	./a.out img/S2_9.pgm 34 53 68 54 51 69 49 89
 	./a.out img/S2_10.pgm 46 53 77 52 72 68 67 87
+clean:
+	-rm a.out
+	-rm img/*Result.pgm
