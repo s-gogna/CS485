@@ -35,3 +35,24 @@ double* Gauss( double sigma, int width )
 	// Return
 	return array;
 }
+
+/* **************************** */
+/* First derivative of Gaussian */
+/* **************************** */
+double* Gauss_Deriv1(double sigma, int width)
+{
+	double cst = 1.0 / (sigma * sigma * sigma * sqrt(2.0 * pi));
+	double tssq = -1.0 / (2.0 * sigma * sigma);
+
+	// Create the array
+	double* array = new double[width];
+
+	for( int i = 0; i < width; i++ ) 
+	{
+		double x = i - width/2;
+		array[i] = -x * cst * exp(x * x * tssq);
+	}
+
+	// Return
+	return array;
+}

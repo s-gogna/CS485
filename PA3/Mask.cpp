@@ -1,6 +1,6 @@
 #ifndef MASK_CPP
 #define MASK_CPP
-#include "GaussGenerator.cpp"
+#include "Gauss.cpp"
 
 class Mask
 {
@@ -20,7 +20,7 @@ Mask::Mask( double sigma, int width )
 {
 	// Initialize
 	dim = width;
-	data = Gauss( sigma, width );
+	data = Gauss_Deriv1( sigma, width );
 }
 
 Mask::~Mask()
