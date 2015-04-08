@@ -18,6 +18,10 @@ class P5PGM
 		void write( const char* );
 
 		P5PGM convolve( const Mask& );
+		P5PGM convolveX( const Mask& );
+		P5PGM convolveY( const Mask& );
+
+		P5PGM multiply( const P5PGM& );
 
 		double& at( int row, int col ) const;
 
@@ -110,6 +114,9 @@ P5PGM& P5PGM::operator=( const P5PGM& src )
 			data[i][j] = src.data[i][j];
 		}
 	}
+
+	// Return
+	return *this;
 }
 
 void P5PGM::read( const char* filename )
@@ -154,7 +161,18 @@ void P5PGM::write( const char* filename )
 	{
 		for( int j = 0; j < width; ++j )
 		{
-			outfile << (unsigned char) data[i][j];
+			if(data[i][j] > 255)
+			{
+				outfile << (unsigned char) 255;
+			}
+			else if(data[i][j] < 0)
+			{
+				outfile << (unsigned char) 0;
+			}
+			else
+			{
+				outfile << (unsigned char) data[i][j];
+			}
 		}
 	}
 }
@@ -195,6 +213,79 @@ P5PGM P5PGM::convolve( const Mask& mask )
 					result.data[i][j] += resultInterm.data[i + k][j] * mask.at(k + halfDim);
 				}
 			}
+		}
+	}
+
+	// Return
+	return result;
+}
+
+P5PGM P5PGM::convolveX( const Mask& mask )
+{
+	// Initialize variables
+	int halfDim = mask.getDim() / 2;
+	P5PGM result(width, height);
+
+	// Apply mask to the image horizontally
+	for( int i = 0; i < height; ++i )
+	{
+		for( int j = 0; j < width; ++j )
+		{
+			for( int k = -halfDim; k <= halfDim; ++k )
+			{
+				// Check if within image
+				if( j+k >= 0 && j+k < width )
+				{
+					result.data[i][j] += data[i][j + k] * mask.at(k + halfDim);
+				}
+			}
+		}
+	}
+
+	// Return
+	return result;
+}
+
+P5PGM P5PGM::convolveY( const Mask& mask )
+{
+	// Initialize variables
+	int halfDim = mask.getDim() / 2;
+	P5PGM result(width, height);
+
+	// Apply mask to the image horizontally
+	for( int i = 0; i < height; ++i )
+	{
+		for( int j = 0; j < width; ++j )
+		{
+			for( int k = -halfDim; k <= halfDim; ++k )
+			{
+				// Check if within image
+				if( i+k >= 0 && i+k < height )
+				{
+					result.data[i][j] += data[i + k][j] * mask.at(k + halfDim);
+				}
+			}
+		}
+	}
+
+	// Return
+	return result;
+}
+
+P5PGM P5PGM::multiply( const P5PGM& src )
+{
+	// Initialize variables
+	P5PGM result(width, height);
+
+	// Make sure dimensions are the same
+	if( src.width != width || src.height != height ) { return result; }
+
+	// Loop through and multiply
+	for( int i = 0; i < height; ++i )
+	{
+		for( int j = 0; j < width; ++j )
+		{
+			result.data[i][j] = data[i][j] * src.data[i][j];
 		}
 	}
 
