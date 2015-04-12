@@ -1,9 +1,18 @@
 #include <iostream>
 #include <cstdlib>
+#include <cmath>
 #include <string>
 #include "P5PGM.cpp"
 #include "P6PGM.cpp"
 using namespace std;
+
+// Structs
+struct ScaleImage
+{
+	double sigmaI;
+	double sigmaD;
+	P5PGM image;
+};
 
 // Functions
 P5PGM computeRImage( double, const P5PGM&, const P5PGM&, const P5PGM& );
@@ -26,15 +35,26 @@ int main(int argc, char** argv)
 	}
 
 	// Initialize variables
+	char buf[16];
 	string filename(argv[1]);
 	P5PGM image;
+	ScaleImage* gss = new ScaleImage[18];
 
 	// Read the image
 	image.read( (filename + ".pgm").c_str() );
 
-	// Compute Harris Corner Image
-	P5PGM harrisCorners = computeHarrisCornerImage( 1.5 * 0.7, 1.5, image );
-	harrisCorners.write( (filename + "_R(Aw)HarrisCorners.pgm").c_str() );
+	// Loop and fill the Gaussian Scale Space
+	for( int k = 0; k < 18; ++k )
+	{
+		// Initialize some values
+		gss[k].sigmaI = 1.5 * pow( 1.2, k );
+		gss[k].sigmaD = 0.7 * gss[k].sigmaI;
+
+		// Compute the Harris Corner Image
+		gss[k].image = computeHarrisCornerImage( gss[k].sigmaD, gss[k].sigmaI, image );
+		sprintf(buf, "%d", k);
+		gss[k].image.write( (filename + "_N" + string(buf) + ".pgm").c_str() );
+	}
 
 	// Return
 	return 0;
