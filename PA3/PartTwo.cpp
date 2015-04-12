@@ -106,8 +106,15 @@ P5PGM computeLocalMaximaImage( const P5PGM& src )
 				}
 			}
 
-			// Set the result
-			result.at(i,j) = max;
+			// If it was not the max, reject corner
+			if( src.at(i,j) != max )
+			{
+				result.at(i,j) = 0;
+			}
+			else
+			{
+				result.at(i,j) = max;
+			}
 		}
 	}
 
