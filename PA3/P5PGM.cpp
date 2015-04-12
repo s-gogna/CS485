@@ -14,6 +14,9 @@ class P5PGM
 		~P5PGM();
 		P5PGM& operator=( const P5PGM& );
 
+		int getWidth() const { return width; }
+		int getHeight() const { return height; }
+
 		void read( const char* );
 		void write( const char* );
 
@@ -296,7 +299,7 @@ P5PGM P5PGM::multiply( const P5PGM& src )
 double& P5PGM::at( int row, int col ) const
 {
 	// Return double
-	return data[col][row];
+	return data[row][col];
 }
 
 

@@ -2,8 +2,8 @@ main:
 	-rm a.out
 	g++ PartOne.cpp -g -Wall
 Test: main
-	./a.out .5 Test/Test1
-	./a.out .5 Test/Test2
-	./a.out .5 Test/Test3
+	./a.out Test/Test1
+	./a.out Test/Test2
+	./a.out Test/Test3
 clean:
-	rm a.out Test/*_*.pgm
+	rm -v a.out Test/*_*.p?m

@@ -5,8 +5,11 @@
 class Mask
 {
 	public:
-		Mask( double, int );
+		Mask();
 		~Mask();
+
+		void buildGauss( double );
+		void buildGaussFirstDeriv( double );
 
 		int getDim() const;
 		const double& at( int ) const;
@@ -16,11 +19,31 @@ class Mask
 		double* data;
 };
 
-Mask::Mask( double sigma, int width )
+Mask::Mask()
 {
 	// Initialize
-	dim = width;
-	data = Gauss_Deriv1( sigma, width );
+	dim = 0;
+	data = NULL;
+}
+
+void Mask::buildGauss( double sigma )
+{
+	// Initialize
+	dim = int(5 * sigma);
+
+	// Reallocate data
+	if( data != NULL ) { delete[] data; }
+	data = Gauss( sigma, int(5 * sigma) );
+}
+
+void Mask::buildGaussFirstDeriv( double sigma )
+{
+	// Initialize
+	dim = int(5 * sigma);
+
+	// Reallocate data
+	if( data != NULL ) { delete[] data; }
+	data = Gauss_Deriv1( sigma, int(5 * sigma) );
 }
 
 Mask::~Mask()
