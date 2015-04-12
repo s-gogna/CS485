@@ -12,6 +12,8 @@ P5PGM computeLocalMaximaImage( const P5PGM& );
 
 P6PGM computeCornerOverlayImage( const P5PGM&, const P5PGM& );
 
+P5PGM computeHarrisCornerImage( double, double, P5PGM& );
+
 // Main
 int main(int argc, char** argv)
 {
@@ -26,44 +28,13 @@ int main(int argc, char** argv)
 	// Initialize variables
 	string filename(argv[1]);
 	P5PGM image;
-	Mask sigmaI;
-	Mask sigmaD;
 
 	// Read the image
 	image.read( (filename + ".pgm").c_str() );
 
-	// Compute the Ix and Iy images
-	sigmaD.buildGaussFirstDeriv( 0.7 * 1.5 );
-	P5PGM Ix = image.convolveX(sigmaD);
-	P5PGM Iy = image.convolveY(sigmaD);
-
-	// Compute Ix^2 , Iy^2 , and IxIy
-	P5PGM Ix2 = Ix.multiply(Ix);
-	P5PGM Iy2 = Iy.multiply(Iy);
-	P5PGM IxIy = Ix.multiply(Iy);
-
-	// Print the images
-	Ix2.write( (filename + "_Ix2.pgm").c_str() );
-	Iy2.write( (filename + "_Iy2.pgm").c_str() );
-	IxIy.write( (filename + "_IxIy.pgm").c_str() );
-
-	// Convolve Ix^2 , Iy^2 , and IxIy with a larger gaussian
-	sigmaI.buildGauss( 1.5 );
-	P5PGM Ix2_Aw = Ix2.convolve(sigmaI);
-	P5PGM Iy2_Aw = Iy2.convolve(sigmaI);
-	P5PGM IxIy_Aw = IxIy.convolve(sigmaI);
-
-	// Compute the R(Aw) image
-	P5PGM rImage = computeRImage( 0.06, Ix2_Aw, Iy2_Aw, IxIy_Aw );
-	rImage.write( (filename + "_R(Aw).pgm").c_str() );
-
-	// Compute the R(Aw) image after a 3x3 local maxima
-	P5PGM rImageMaxima = computeLocalMaximaImage( rImage );
-	rImageMaxima.write( (filename + "_R(Aw)LocalMaxima.pgm").c_str() );
-
-	// Get the corner overlay image
-	P6PGM overlayImage = computeCornerOverlayImage( image, rImageMaxima );
-	overlayImage.write( (filename + "_CornerOverlay.ppm").c_str() );
+	// Compute Harris Corner Image
+	P5PGM harrisCorners = computeHarrisCornerImage( 1.5 * 0.7, 1.5, image );
+	harrisCorners.write( (filename + "_R(Aw)HarrisCorners.pgm").c_str() );
 
 	// Return
 	return 0;
@@ -168,6 +139,27 @@ P6PGM computeCornerOverlayImage( const P5PGM& src, const P5PGM& corners )
 
 	// Return
 	return result;
+}
+
+P5PGM computeHarrisCornerImage( double sigmaD, double sigmaI, P5PGM& src )
+{
+	// Initialize variables
+	Mask maskD;
+	Mask maskI;
+
+	// Compute Ix and Iy
+	maskD.buildGaussFirstDeriv( sigmaD );
+	P5PGM Ix = src.convolveX( maskD );
+	P5PGM Iy = src.convolveY( maskD );
+
+	// Compute Ix2, Iy2, IxIy
+	maskI.buildGauss( sigmaI );
+	P5PGM Ix2 = Ix.multiply( Ix ).convolve( maskI );
+	P5PGM Iy2 = Iy.multiply( Iy ).convolve( maskI );
+	P5PGM IxIy = Ix.multiply( Iy ).convolve( maskI );
+
+	// Compute the Local Maxima RImage
+	return computeLocalMaximaImage( computeRImage( 0.06, Ix2, Iy2, IxIy ) );
 }
 
 
