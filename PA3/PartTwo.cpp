@@ -3,7 +3,7 @@
 #include <cmath>
 #include <string>
 #include "P5PGM.cpp"
-#include "P6PGM.cpp"
+#include "P6PPM.cpp"
 using namespace std;
 
 // Structs
@@ -19,7 +19,9 @@ P5PGM computeRImage( double, const P5PGM&, const P5PGM&, const P5PGM& );
 
 P5PGM computeLocalMaximaImage( const P5PGM& );
 
-P6PGM computeCornerOverlayImage( const P5PGM&, const P5PGM& );
+P5PGM computeLocalScaleMaximaImage( const P5PGM&, const P5PGM&, const P5PGM& );
+
+P6PPM computeCornerOverlayImage( const P5PGM&, const P5PGM& );
 
 P5PGM computeHarrisCornerImage( double, double, P5PGM& );
 
@@ -38,23 +40,96 @@ int main(int argc, char** argv)
 	char buf[16];
 	string filename(argv[1]);
 	P5PGM image;
-	ScaleImage* gss = new ScaleImage[18];
+	P5PGM* gauss = new P5PGM[18];
+	P5PGM* diffGauss = new P5PGM[17];
+	P5PGM* diffGaussMaxima = new P5PGM[17];
+	P5PGM* harrisCorners = new P5PGM[18];
+	P5PGM* harrisCornersMaxima = new P5PGM[18];
 
 	// Read the image
 	image.read( (filename + ".pgm").c_str() );
+	P5PGM empty( image.getHeight(), image.getWidth() );
 
 	// Loop and fill the Gaussian Scale Space
-	for( int k = 0; k < 18; ++k )
+	cout << "Filling Gaussian Scale Space . . ." << endl;
+	for( int m = 0; m < 18; ++m )
 	{
-		// Initialize some values
-		gss[k].sigmaI = 1.5 * pow( 1.2, k );
-		gss[k].sigmaD = 0.7 * gss[k].sigmaI;
+		// Convolve and save
+		Mask gaussMask;
+		gaussMask.buildGauss( 1.5 * pow( 1.2, m ) );
+		gauss[m] = image.convolve( gaussMask );
 
-		// Compute the Harris Corner Image
-		gss[k].image = computeHarrisCornerImage( gss[k].sigmaD, gss[k].sigmaI, image );
-		sprintf(buf, "%d", k);
-		gss[k].image.write( (filename + "_N" + string(buf) + ".pgm").c_str() );
+		// Write the image
+		sprintf(buf, "%d", m);
+//		gauss[m].write( (filename + "_Gauss_N" + string(buf) + ".pgm").c_str() );
 	}
+
+	// Loop and fill the Difference of Gaussian Scale Space
+	cout << "Filling Difference of Gaussian Scale Space . . ." << endl;
+	for( int m = 0; m < 17; ++m )
+	{
+		// Subtract and save
+		diffGauss[m] = gauss[m].subtract( gauss[m+1] );
+
+		// Write the image
+		sprintf(buf, "%d", m);
+		diffGauss[m].normalizedWrite( (filename + "_DoGauss_N" + string(buf) + ".pgm").c_str() );
+	}
+
+	// Loop and fill the Harris Corners for each sigma in the Gauss Scale Space
+	cout << "Filling Harris Corners Space . . ." << endl;
+	for( int m = 0; m < 18; ++m )
+	{
+		// Compute the Harris Corner Image
+		double sigmaI = 1.5 * pow( 1.2, m );
+		harrisCorners[m] = computeHarrisCornerImage( 0.7 * sigmaI, sigmaI, image );
+
+		// Write the image
+		sprintf(buf, "%d", m);
+//		harrisCorners[m].write( (filename + "_HarrisCorners_N" + string(buf) + ".pgm").c_str() );
+	}
+
+	// Loop and perform 3x3 Maxima Thresholding for each Harris Corner Image
+	cout << "Filling Harris Corner Threshold Space . . ." << endl;
+	for( int m = 0; m < 18; ++m )
+	{
+		// Compute the Harris Corner Maxima Image
+		harrisCornersMaxima[m] = computeLocalMaximaImage( harrisCorners[m] );
+
+		// Write the image
+		sprintf(buf, "%d", m);
+//		harrisCornersMaxima[m].write( (filename + "_HarrisCornersMaxima_N" + string(buf) + ".pgm").c_str() );
+	}
+
+	// Loop and perform 3x3x3 Maxima Thresholding for successive levels of the DoG
+	cout << "Filling Difference of Gaussian Threshold Space . . ." << endl;
+	for( int m = 0; m < 17; ++m )
+	{
+		// Compute the Harris Corner Maxima Image
+		if( m == 0 )
+		{
+			diffGaussMaxima[m] = computeLocalScaleMaximaImage( empty, diffGauss[0], diffGauss[1] );
+		}
+		else if( m == 16 )
+		{
+			diffGaussMaxima[m] = computeLocalScaleMaximaImage( diffGauss[15], diffGauss[16], empty );
+		}
+		else
+		{
+			diffGaussMaxima[m] = computeLocalScaleMaximaImage( diffGauss[m-1], diffGauss[m], diffGauss[m+1] );
+		}
+
+		// Write the image
+		sprintf(buf, "%d", m);
+		diffGaussMaxima[m].normalizedWrite( (filename + "_DoGaussMaxima_N" + string(buf) + ".pgm").c_str() );
+	}
+	
+
+	// Deallocate
+	delete[] gauss;
+	delete[] diffGauss;
+	delete[] harrisCorners;
+	delete[] harrisCornersMaxima;
 
 	// Return
 	return 0;
@@ -67,7 +142,7 @@ P5PGM computeRImage( double alpha, const P5PGM& Ix2, const P5PGM& Iy2, const P5P
 	int width = Ix2.getWidth();
 	int height = Ix2.getHeight();
 	double max = -1000000.0;
-	P5PGM result( width, height );
+	P5PGM result( height, width );
 
 	// All operations are performed per pixel
 	for( int i = 0; i < height; ++i )
@@ -104,7 +179,7 @@ P5PGM computeLocalMaximaImage( const P5PGM& src )
 	// Initialize variables
 	int width = src.getWidth();
 	int height = src.getHeight();
-	P5PGM result( width, height );
+	P5PGM result( height, width );
 
 	// Loop through image
 	for( int i = 0; i < height; ++i )
@@ -127,6 +202,51 @@ P5PGM computeLocalMaximaImage( const P5PGM& src )
 			}
 
 			// If it was not the max, reject corner
+			if( src.at(i,j) != max || src.at(i,j) < 1500 )
+			{
+				result.at(i,j) = 0;
+			}
+			else
+			{
+				result.at(i,j) = max;
+			}
+		}
+	}
+
+	// Return
+	return result;
+}
+
+P5PGM computeLocalScaleMaximaImage( const P5PGM& below, const P5PGM& src, const P5PGM& above )
+{
+	// Initialize variables
+	int width = src.getWidth();
+	int height = src.getHeight();
+	P5PGM result( height, width );
+
+	// Loop through image
+	for( int i = 0; i < height; ++i )
+	{
+		for( int j = 0; j < width; ++j )
+		{
+			// Initialize some more variables
+			double max = 0.0;
+
+			// Find the max in a 3x3x3 neighborhood
+			for( int k = -1; k <= 1; ++k )
+			{
+				for( int l = -1; l <= 1; ++l )
+				{
+					if( (i+k) >= 0 && (i+k) < height && (j+l) >= 0 && (j+l) < width )
+					{
+						if( above.at(i+k, j+l) > max ) { max = above.at(i+k, j+l); }
+						if( src.at(i+k, j+l) > max ) { max = src.at(i+k, j+l); }
+						if( below.at(i+k, j+l) > max ) { max = below.at(i+k, j+l); }
+					}
+				}
+			}
+
+			// If it was not the max, reject corner
 			if( src.at(i,j) != max )
 			{
 				result.at(i,j) = 0;
@@ -142,12 +262,12 @@ P5PGM computeLocalMaximaImage( const P5PGM& src )
 	return result;
 }
 
-P6PGM computeCornerOverlayImage( const P5PGM& src, const P5PGM& corners )
+P6PPM computeCornerOverlayImage( const P5PGM& src, const P5PGM& corners )
 {
 	// Initialize
 	int width = src.getWidth();
 	int height = src.getHeight();
-	P6PGM result( src );
+	P6PPM result( src );
 
 	// Loop through image
 	for( int i = 0; i < height; ++i )
@@ -186,7 +306,7 @@ P5PGM computeHarrisCornerImage( double sigmaD, double sigmaI, P5PGM& src )
 	P5PGM IxIy = Ix.multiply( Iy ).convolve( maskI );
 
 	// Compute the Local Maxima RImage
-	return computeLocalMaximaImage( computeRImage( 0.06, Ix2, Iy2, IxIy ) );
+	return computeRImage( 0.06, Ix2, Iy2, IxIy );
 }
 
 

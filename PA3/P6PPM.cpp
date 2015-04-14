@@ -1,26 +1,29 @@
-#ifndef P6PGM_CPP
-#define P6PGM_CPP
+#ifndef P6PPM_CPP
+#define P6PPM_CPP
 #include <iostream>
 #include <fstream>
 #include "Mask.cpp"
 #include "P5PGM.cpp"
 using namespace std;
 
-class P6PGM
+class P6PPM
 {
 	public:
-		P6PGM();
-		P6PGM( int Width, int Height );
-		P6PGM( const P5PGM& );
-		P6PGM( const P6PGM& );
-		~P6PGM();
-		P6PGM& operator=( const P6PGM& );
+		P6PPM();
+		P6PPM( int Width, int Height );
+		P6PPM( const P5PGM& );
+		P6PPM( const P6PPM& );
+		~P6PPM();
+		P6PPM& operator=( const P6PPM& );
 
 		int getWidth() const { return width; }
 		int getHeight() const { return height; }
 
 		void read( const char* );
 		void write( const char* );
+
+		void drawCircleAt( int row, int col, int r, int g, int b, double radius );
+		void drawCrossAt( int row, int col, int r, int g, int b, int size );
 
 		double& at( int row, int col, int dim ) const { return data[row][col][dim]; }
 
@@ -30,14 +33,14 @@ class P6PGM
 		int height;
 };
 
-P6PGM::P6PGM()
+P6PPM::P6PPM()
 {
 	// Initialize
 	width = height = 0;
 	data = NULL;
 }
 
-P6PGM::P6PGM( int Width, int Height )
+P6PPM::P6PPM( int Width, int Height )
 {
 	// Initialize
 	width = Width;
@@ -56,7 +59,7 @@ P6PGM::P6PGM( int Width, int Height )
 	}
 }
 
-P6PGM::P6PGM( const P5PGM& src )
+P6PPM::P6PPM( const P5PGM& src )
 {
 	// Copy fields
 	width = src.getWidth();
@@ -77,7 +80,7 @@ P6PGM::P6PGM( const P5PGM& src )
 	}
 }
 
-P6PGM::P6PGM( const P6PGM& src )
+P6PPM::P6PPM( const P6PPM& src )
 {
 	// Copy fields
 	width = src.width;
@@ -98,7 +101,7 @@ P6PGM::P6PGM( const P6PGM& src )
 	}
 }
 
-P6PGM::~P6PGM()
+P6PPM::~P6PPM()
 {
 	// Reset
 	width = height = 0;
@@ -110,7 +113,7 @@ P6PGM::~P6PGM()
 	data = NULL;
 }
 
-P6PGM& P6PGM::operator=( const P6PGM& src )
+P6PPM& P6PPM::operator=( const P6PPM& src )
 {
 	// Check if self
 	if( &src == this ) { return *this; }
@@ -152,7 +155,7 @@ P6PGM& P6PGM::operator=( const P6PGM& src )
 	return *this;
 }
 
-void P6PGM::read( const char* filename )
+void P6PPM::read( const char* filename )
 {
 	// Initialize variables
 	char buf[255];
@@ -184,7 +187,7 @@ void P6PGM::read( const char* filename )
 	}
 }
 
-void P6PGM::write( const char* filename )
+void P6PPM::write( const char* filename )
 {
 	// Initialize variables
 	ofstream outfile(filename);
@@ -216,5 +219,59 @@ void P6PGM::write( const char* filename )
 	}
 }
 
+void P6PPM::drawCircleAt( int row, int col, int r, int g, int b, double radius )
+{
+	// Initialize variables
+	int intRadius = int(radius) + 1;
+
+	// Loop in a square the size of the radius
+	for( int i = -intRadius; i <= intRadius; ++i )
+	{
+		for( int j = -intRadius; j <= intRadius; ++j )
+		{
+			// Check if coordinate is inside the image
+			if( row+i >= 0 && row+i < height && col+j >= 0 && col+j < width )
+			{
+				// Check if the value is on the circle
+				if( ((intRadius*intRadius) - (i*i + j*j)) > 0.5 )
+				{
+					// Change the color of the pixel
+					data[row + i][col + j][0] = r;
+					data[row + i][col + j][1] = g;
+					data[row + i][col + j][2] = b;
+				}
+			}
+		}
+	}
+}
+
+void P6PPM::drawCrossAt( int row, int col, int r, int g, int b, int size )
+{
+	// Loop in the Y
+	for( int i = -size; i <= size; ++i )
+	{
+		// Check if coordinate is inside the image
+		if( row+i >= 0 && row+i < height )
+		{
+			// Change the color of the pixel
+			data[row + i][col][0] = r;
+			data[row + i][col][1] = g;
+			data[row + i][col][2] = b;
+		}
+	}
+
+	// Loop in the X
+	for( int i = -size; i <= size; ++i )
+	{
+		// Check if coordinate is inside the image
+		if( col+i >= 0 && col+i < width )
+		{
+			// Change the color of the pixel
+			data[row][col + i][0] = r;
+			data[row][col + i][1] = g;
+			data[row][col + i][2] = b;
+		}
+	}
+}
 
 #endif

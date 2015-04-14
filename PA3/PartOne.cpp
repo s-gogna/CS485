@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <string>
 #include "P5PGM.cpp"
-#include "P6PGM.cpp"
+#include "P6PPM.cpp"
 using namespace std;
 
 // Functions
@@ -10,7 +10,7 @@ P5PGM computeRImage( double, const P5PGM&, const P5PGM&, const P5PGM& );
 
 P5PGM computeLocalMaximaImage( const P5PGM& );
 
-P6PGM computeCornerOverlayImage( const P5PGM&, const P5PGM& );
+P6PPM computeCornerOverlayImage( const P5PGM&, const P5PGM& );
 
 // Main
 int main(int argc, char** argv)
@@ -76,7 +76,7 @@ P5PGM computeRImage( double alpha, const P5PGM& Ix2, const P5PGM& Iy2, const P5P
 	int width = Ix2.getWidth();
 	int height = Ix2.getHeight();
 	double max = -1000000.0;
-	P5PGM result( width, height );
+	P5PGM result( height, width );
 
 	// All operations are performed per pixel
 	for( int i = 0; i < height; ++i )
@@ -113,7 +113,7 @@ P5PGM computeLocalMaximaImage( const P5PGM& src )
 	// Initialize variables
 	int width = src.getWidth();
 	int height = src.getHeight();
-	P5PGM result( width, height );
+	P5PGM result( height, width );
 
 	// Loop through image
 	for( int i = 0; i < height; ++i )
@@ -151,12 +151,12 @@ P5PGM computeLocalMaximaImage( const P5PGM& src )
 	return result;
 }
 
-P6PGM computeCornerOverlayImage( const P5PGM& src, const P5PGM& corners )
+P6PPM computeCornerOverlayImage( const P5PGM& src, const P5PGM& corners )
 {
 	// Initialize
 	int width = src.getWidth();
 	int height = src.getHeight();
-	P6PGM result( src );
+	P6PPM result( src );
 
 	// Loop through image
 	for( int i = 0; i < height; ++i )

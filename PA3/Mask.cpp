@@ -31,9 +31,12 @@ void Mask::buildGauss( double sigma )
 	// Initialize
 	dim = int(5 * sigma);
 
+	// If the mask dimension is even, add another dimension
+	if( dim % 2 == 0 ) { dim++; }
+
 	// Reallocate data
 	if( data != NULL ) { delete[] data; }
-	data = Gauss( sigma, int(5 * sigma) );
+	data = Gauss( sigma, dim );
 }
 
 void Mask::buildGaussFirstDeriv( double sigma )
@@ -41,9 +44,12 @@ void Mask::buildGaussFirstDeriv( double sigma )
 	// Initialize
 	dim = int(5 * sigma);
 
+	// If the mask dimension is even, add another dimension
+	if( dim % 2 == 0 ) { dim++; }
+
 	// Reallocate data
 	if( data != NULL ) { delete[] data; }
-	data = Gauss_Deriv1( sigma, int(5 * sigma) );
+	data = Gauss_Deriv1( sigma, dim );
 }
 
 Mask::~Mask()
