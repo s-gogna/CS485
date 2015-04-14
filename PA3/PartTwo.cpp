@@ -35,8 +35,8 @@ int main(int argc, char** argv)
 	P5PGM* gauss = new P5PGM[18];
 	P5PGM* diffGauss = new P5PGM[17];
 	P5PGM* harrisCorners = new P5PGM[18];
-	P5PGM* harrisCornersMaxima = new P5PGM[18];
-	P5PGM* cornerDiffGaussMaxima = new P5PGM[17];
+	P5PGM* cornerMaxima = new P5PGM[18];
+	P5PGM* cornerScaleMaxima = new P5PGM[17];
 
 	// Read the image
 	image.read( (filename + ".pgm").c_str() );
@@ -52,8 +52,8 @@ int main(int argc, char** argv)
 		gauss[m] = image.convolve( gaussMask );
 
 		// Write the image
-		sprintf(buf, "%d", m);
-		gauss[m].normalize().write( (filename + "_Gauss_N" + string(buf) + ".pgm").c_str() );
+		// sprintf(buf, "%d", m);
+		// gauss[m].normalize().write( (filename + "_Gauss_N" + string(buf) + ".pgm").c_str() );
 	}
 
 	// Loop and fill the Difference of Gaussian Scale Space
@@ -64,8 +64,8 @@ int main(int argc, char** argv)
 		diffGauss[m] = gauss[m+1].subtract( gauss[m] );
 
 		// Write the image
-		sprintf(buf, "%d", m);
-		diffGauss[m].normalize().write( (filename + "_DoGauss_N" + string(buf) + ".pgm").c_str() );
+		// sprintf(buf, "%d", m);
+		// diffGauss[m].normalize().write( (filename + "_DoGauss_N" + string(buf) + ".pgm").c_str() );
 	}
 
 	// Loop and fill the Harris Corners for each sigma in the Gauss Scale Space
@@ -74,12 +74,13 @@ int main(int argc, char** argv)
 	{
 		// Compute the Harris Corner Image
 		double sigmaI = 1.5 * pow( 1.2, m );
-		cout << "Sigma = " << 1.5 * pow( 1.2, m ) << endl;
+		cout << "(Sigma, InterestPoints) = " << "( " << 1.5 * pow( 1.2, m ) << " , ";
 		harrisCorners[m] = computeHarrisCornerImage( 0.7 * sigmaI, sigmaI, image );
 
 		// Write the image
 		sprintf(buf, "%d", m);
-		harrisCorners[m].normalize().write( (filename + "_HarrisCorners_N" + string(buf) + ".pgm").c_str() );
+		computeCornerOverlayImage( image, harrisCorners[m].normalize(), 1.5 * pow( 1.2, m ) ).
+			write( (filename + "_Corners_M" + string(buf) + ".ppm").c_str() );
 	}
 
 	// Loop and perform 3x3 Maxima Thresholding for each Harris Corner Image
@@ -87,12 +88,13 @@ int main(int argc, char** argv)
 	for( int m = 0; m < 18; ++m )
 	{
 		// Compute the Harris Corner Maxima Image
-		cout << "Sigma = " << 1.5 * pow( 1.2, m ) << endl;
-		harrisCornersMaxima[m] = computeLocalMaximaImage( harrisCorners[m] );
+		cout << "(Sigma, InterestPoints) = " << "( " << 1.5 * pow( 1.2, m ) << " , ";
+		cornerMaxima[m] = computeLocalMaximaImage( harrisCorners[m] );
 
 		// Write the image
 		sprintf(buf, "%d", m);
-		harrisCornersMaxima[m].normalize().write( (filename + "_HarrisCornersMaxima_N" + string(buf) + ".pgm").c_str() );
+		computeCornerOverlayImage( image, cornerMaxima[m].normalize(), 1.5 * pow( 1.2, m ) ).
+			write( (filename + "_CornersThresh_M" + string(buf) + ".ppm").c_str() );
 	}
 
 	// Loop and perform 3x3x3 Maxima Thresholding for successive levels of the DoG
@@ -100,41 +102,32 @@ int main(int argc, char** argv)
 	for( int m = 0; m < 17; ++m )
 	{
 		// Compute the Harris Corner Maxima Image
-		cout << "Sigma = " << 1.5 * pow( 1.2, m ) << endl;
+		cout << "(Sigma, InterestPoints) = " << "( " << 1.5 * pow( 1.2, m ) << " , ";
 		if( m == 0 )
 		{
-			cornerDiffGaussMaxima[m] = computeLocalScaleMaximaImage( harrisCorners[0], empty, diffGauss[0], diffGauss[1] );
+			cornerScaleMaxima[m] = computeLocalScaleMaximaImage( harrisCorners[0], empty, diffGauss[0], diffGauss[1] );
 		}
 		else if( m == 16 )
 		{
-			cornerDiffGaussMaxima[m] = computeLocalScaleMaximaImage( harrisCorners[16], diffGauss[15], diffGauss[16], empty );
+			cornerScaleMaxima[m] = computeLocalScaleMaximaImage( harrisCorners[16], diffGauss[15], diffGauss[16], empty );
 		}
 		else
 		{
-			cornerDiffGaussMaxima[m] = computeLocalScaleMaximaImage( harrisCorners[m], diffGauss[m-1], diffGauss[m], diffGauss[m+1] );
+			cornerScaleMaxima[m] = computeLocalScaleMaximaImage( harrisCorners[m], diffGauss[m-1], diffGauss[m], diffGauss[m+1] );
 		}
 
 		// Write the image
 		sprintf(buf, "%d", m);
-		cornerDiffGaussMaxima[m].normalize().write( (filename + "_CornerDoGaussMaxima_N" + string(buf) + ".pgm").c_str() );
-	}
-
-	// Print the overlay images
-	cout << "Saving Overlay Images to Disk . . ." << endl;
-	for( int m = 0; m < 17; ++m )
-	{
-		// Compute the overlay image
-		sprintf(buf, "%d", m);
-		computeCornerOverlayImage( image, cornerDiffGaussMaxima[m].normalize(), 1.5 * pow( 1.2, m ) ).write( 
-			(filename + "_Overlay_N" + string(buf) + ".ppm").c_str() );
+		computeCornerOverlayImage( image, cornerScaleMaxima[m].normalize(), 1.5 * pow( 1.2, m ) ).
+			write( (filename + "_CornersScaleThresh_M" + string(buf) + ".ppm").c_str() );
 	}
 	
 	// Deallocate
 	delete[] gauss;
 	delete[] diffGauss;
 	delete[] harrisCorners;
-	delete[] harrisCornersMaxima;
-	delete[] cornerDiffGaussMaxima;
+	delete[] cornerMaxima;
+	delete[] cornerScaleMaxima;
 
 	// Return
 	return 0;
@@ -182,7 +175,7 @@ P5PGM computeRImage( double alpha, const P5PGM& Ix2, const P5PGM& Iy2, const P5P
 			}
 		}
 	}
-	cout << count << " Interest Points in R-Image" << endl;
+	cout << count << " ) R-Image" << endl;
 
 	// Return
 	return result;
@@ -228,7 +221,7 @@ P5PGM computeLocalMaximaImage( const P5PGM& src )
 			}
 		}
 	}
-	cout << count << " Interest Points in Non-Maxima Supression" << endl;
+	cout << count << " ) Non-Maxima Supression" << endl;
 
 	// Return
 	return result;
@@ -280,7 +273,7 @@ P5PGM computeLocalScaleMaximaImage( P5PGM& corners, const P5PGM& below, const P5
 			}
 		}
 	}
-	cout << count << " Interest Points in Scale Non-Maxima Supression" << endl;
+	cout << count << " ) Scale Non-Maxima Supression" << endl;
 
 	// Return
 	return result;
