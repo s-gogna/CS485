@@ -1,0 +1,702 @@
+rm -v a.out 
+removed ‘a.out’
+rm -v Test/*_*.p?m 
+removed ‘Test/Test1_CornerOverlay.ppm’
+removed ‘Test/Test1_Ix2.pgm’
+removed ‘Test/Test1_IxIy.pgm’
+removed ‘Test/Test1_Iy2.pgm’
+removed ‘Test/Test1_R(Aw).pgm’
+removed ‘Test/Test1_R(Aw)LocalMaxima.pgm’
+removed ‘Test/Test2_CornerOverlay.ppm’
+removed ‘Test/Test2_Ix2.pgm’
+removed ‘Test/Test2_IxIy.pgm’
+removed ‘Test/Test2_Iy2.pgm’
+removed ‘Test/Test2_R(Aw).pgm’
+removed ‘Test/Test2_R(Aw)LocalMaxima.pgm’
+removed ‘Test/Test3_CornerOverlay.ppm’
+removed ‘Test/Test3_Ix2.pgm’
+removed ‘Test/Test3_IxIy.pgm’
+removed ‘Test/Test3_Iy2.pgm’
+removed ‘Test/Test3_R(Aw).pgm’
+removed ‘Test/Test3_R(Aw)LocalMaxima.pgm’
+rm -v Boat/*_*.p?m 
+rm -v Graf/*_*.p?m 
+g++ PartTwo.cpp -g -Wall
+./a.out Boat/img1
+Computing Gaussian Scale Space . . .
+Computing Difference of Gaussian Scale Space . . .
+Computing Harris Corners . . .
+Sigma = 1.5
+58160 Interest Points in R-Image
+Sigma = 1.8
+72269 Interest Points in R-Image
+Sigma = 2.16
+90737 Interest Points in R-Image
+Sigma = 2.592
+108962 Interest Points in R-Image
+Sigma = 3.1104
+128301 Interest Points in R-Image
+Sigma = 3.73248
+153541 Interest Points in R-Image
+Sigma = 4.47898
+175982 Interest Points in R-Image
+Sigma = 5.37477
+200868 Interest Points in R-Image
+Sigma = 6.44973
+231947 Interest Points in R-Image
+Sigma = 7.73967
+252933 Interest Points in R-Image
+Sigma = 9.2876
+276000 Interest Points in R-Image
+Sigma = 11.1451
+295258 Interest Points in R-Image
+Sigma = 13.3742
+318612 Interest Points in R-Image
+Sigma = 16.049
+339701 Interest Points in R-Image
+Sigma = 19.2588
+366443 Interest Points in R-Image
+Sigma = 23.1105
+387989 Interest Points in R-Image
+Sigma = 27.7326
+414625 Interest Points in R-Image
+Sigma = 33.2792
+438831 Interest Points in R-Image
+Computing Harris Corner with Threshold . . .
+Sigma = 1.5
+2125 Interest Points in Non-Maxima Supression
+Sigma = 1.8
+1699 Interest Points in Non-Maxima Supression
+Sigma = 2.16
+1381 Interest Points in Non-Maxima Supression
+Sigma = 2.592
+1108 Interest Points in Non-Maxima Supression
+Sigma = 3.1104
+805 Interest Points in Non-Maxima Supression
+Sigma = 3.73248
+488 Interest Points in Non-Maxima Supression
+Sigma = 4.47898
+274 Interest Points in Non-Maxima Supression
+Sigma = 5.37477
+143 Interest Points in Non-Maxima Supression
+Sigma = 6.44973
+37 Interest Points in Non-Maxima Supression
+Sigma = 7.73967
+4 Interest Points in Non-Maxima Supression
+Sigma = 9.2876
+0 Interest Points in Non-Maxima Supression
+Sigma = 11.1451
+0 Interest Points in Non-Maxima Supression
+Sigma = 13.3742
+0 Interest Points in Non-Maxima Supression
+Sigma = 16.049
+0 Interest Points in Non-Maxima Supression
+Sigma = 19.2588
+0 Interest Points in Non-Maxima Supression
+Sigma = 23.1105
+0 Interest Points in Non-Maxima Supression
+Sigma = 27.7326
+0 Interest Points in Non-Maxima Supression
+Sigma = 33.2792
+0 Interest Points in Non-Maxima Supression
+Computing Harris Corners with Difference of Gaussian Threshold . . .
+Sigma = 1.5
+516 Interest Points in Scale Non-Maxima Supression
+Sigma = 1.8
+37 Interest Points in Scale Non-Maxima Supression
+Sigma = 2.16
+35 Interest Points in Scale Non-Maxima Supression
+Sigma = 2.592
+13 Interest Points in Scale Non-Maxima Supression
+Sigma = 3.1104
+119 Interest Points in Scale Non-Maxima Supression
+Sigma = 3.73248
+15 Interest Points in Scale Non-Maxima Supression
+Sigma = 4.47898
+5 Interest Points in Scale Non-Maxima Supression
+Sigma = 5.37477
+33 Interest Points in Scale Non-Maxima Supression
+Sigma = 6.44973
+8 Interest Points in Scale Non-Maxima Supression
+Sigma = 7.73967
+20 Interest Points in Scale Non-Maxima Supression
+Sigma = 9.2876
+12 Interest Points in Scale Non-Maxima Supression
+Sigma = 11.1451
+9 Interest Points in Scale Non-Maxima Supression
+Sigma = 13.3742
+8 Interest Points in Scale Non-Maxima Supression
+Sigma = 16.049
+7 Interest Points in Scale Non-Maxima Supression
+Sigma = 19.2588
+3 Interest Points in Scale Non-Maxima Supression
+Sigma = 23.1105
+3 Interest Points in Scale Non-Maxima Supression
+Sigma = 27.7326
+1 Interest Points in Scale Non-Maxima Supression
+Saving Overlay Images to Disk . . .
+./a.out Boat/img3
+Computing Gaussian Scale Space . . .
+Computing Difference of Gaussian Scale Space . . .
+Computing Harris Corners . . .
+Sigma = 1.5
+49765 Interest Points in R-Image
+Sigma = 1.8
+61246 Interest Points in R-Image
+Sigma = 2.16
+76066 Interest Points in R-Image
+Sigma = 2.592
+86648 Interest Points in R-Image
+Sigma = 3.1104
+99203 Interest Points in R-Image
+Sigma = 3.73248
+115123 Interest Points in R-Image
+Sigma = 4.47898
+124446 Interest Points in R-Image
+Sigma = 5.37477
+137194 Interest Points in R-Image
+Sigma = 6.44973
+159162 Interest Points in R-Image
+Sigma = 7.73967
+177003 Interest Points in R-Image
+Sigma = 9.2876
+193941 Interest Points in R-Image
+Sigma = 11.1451
+217968 Interest Points in R-Image
+Sigma = 13.3742
+247316 Interest Points in R-Image
+Sigma = 16.049
+266332 Interest Points in R-Image
+Sigma = 19.2588
+293928 Interest Points in R-Image
+Sigma = 23.1105
+326563 Interest Points in R-Image
+Sigma = 27.7326
+351073 Interest Points in R-Image
+Sigma = 33.2792
+377332 Interest Points in R-Image
+Computing Harris Corner with Threshold . . .
+Sigma = 1.5
+1791 Interest Points in Non-Maxima Supression
+Sigma = 1.8
+1428 Interest Points in Non-Maxima Supression
+Sigma = 2.16
+1124 Interest Points in Non-Maxima Supression
+Sigma = 2.592
+863 Interest Points in Non-Maxima Supression
+Sigma = 3.1104
+651 Interest Points in Non-Maxima Supression
+Sigma = 3.73248
+406 Interest Points in Non-Maxima Supression
+Sigma = 4.47898
+249 Interest Points in Non-Maxima Supression
+Sigma = 5.37477
+120 Interest Points in Non-Maxima Supression
+Sigma = 6.44973
+42 Interest Points in Non-Maxima Supression
+Sigma = 7.73967
+3 Interest Points in Non-Maxima Supression
+Sigma = 9.2876
+0 Interest Points in Non-Maxima Supression
+Sigma = 11.1451
+0 Interest Points in Non-Maxima Supression
+Sigma = 13.3742
+0 Interest Points in Non-Maxima Supression
+Sigma = 16.049
+0 Interest Points in Non-Maxima Supression
+Sigma = 19.2588
+0 Interest Points in Non-Maxima Supression
+Sigma = 23.1105
+0 Interest Points in Non-Maxima Supression
+Sigma = 27.7326
+0 Interest Points in Non-Maxima Supression
+Sigma = 33.2792
+0 Interest Points in Non-Maxima Supression
+Computing Harris Corners with Difference of Gaussian Threshold . . .
+Sigma = 1.5
+355 Interest Points in Scale Non-Maxima Supression
+Sigma = 1.8
+20 Interest Points in Scale Non-Maxima Supression
+Sigma = 2.16
+24 Interest Points in Scale Non-Maxima Supression
+Sigma = 2.592
+3 Interest Points in Scale Non-Maxima Supression
+Sigma = 3.1104
+86 Interest Points in Scale Non-Maxima Supression
+Sigma = 3.73248
+11 Interest Points in Scale Non-Maxima Supression
+Sigma = 4.47898
+5 Interest Points in Scale Non-Maxima Supression
+Sigma = 5.37477
+23 Interest Points in Scale Non-Maxima Supression
+Sigma = 6.44973
+6 Interest Points in Scale Non-Maxima Supression
+Sigma = 7.73967
+11 Interest Points in Scale Non-Maxima Supression
+Sigma = 9.2876
+1 Interest Points in Scale Non-Maxima Supression
+Sigma = 11.1451
+7 Interest Points in Scale Non-Maxima Supression
+Sigma = 13.3742
+2 Interest Points in Scale Non-Maxima Supression
+Sigma = 16.049
+1 Interest Points in Scale Non-Maxima Supression
+Sigma = 19.2588
+1 Interest Points in Scale Non-Maxima Supression
+Sigma = 23.1105
+1 Interest Points in Scale Non-Maxima Supression
+Sigma = 27.7326
+0 Interest Points in Scale Non-Maxima Supression
+Saving Overlay Images to Disk . . .
+./a.out Boat/img5
+Computing Gaussian Scale Space . . .
+Computing Difference of Gaussian Scale Space . . .
+Computing Harris Corners . . .
+Sigma = 1.5
+25321 Interest Points in R-Image
+Sigma = 1.8
+35424 Interest Points in R-Image
+Sigma = 2.16
+45358 Interest Points in R-Image
+Sigma = 2.592
+55224 Interest Points in R-Image
+Sigma = 3.1104
+62931 Interest Points in R-Image
+Sigma = 3.73248
+73936 Interest Points in R-Image
+Sigma = 4.47898
+87550 Interest Points in R-Image
+Sigma = 5.37477
+97634 Interest Points in R-Image
+Sigma = 6.44973
+109761 Interest Points in R-Image
+Sigma = 7.73967
+125062 Interest Points in R-Image
+Sigma = 9.2876
+134884 Interest Points in R-Image
+Sigma = 11.1451
+144107 Interest Points in R-Image
+Sigma = 13.3742
+155127 Interest Points in R-Image
+Sigma = 16.049
+169963 Interest Points in R-Image
+Sigma = 19.2588
+190191 Interest Points in R-Image
+Sigma = 23.1105
+216021 Interest Points in R-Image
+Sigma = 27.7326
+247235 Interest Points in R-Image
+Sigma = 33.2792
+280241 Interest Points in R-Image
+Computing Harris Corner with Threshold . . .
+Sigma = 1.5
+892 Interest Points in Non-Maxima Supression
+Sigma = 1.8
+760 Interest Points in Non-Maxima Supression
+Sigma = 2.16
+627 Interest Points in Non-Maxima Supression
+Sigma = 2.592
+501 Interest Points in Non-Maxima Supression
+Sigma = 3.1104
+350 Interest Points in Non-Maxima Supression
+Sigma = 3.73248
+229 Interest Points in Non-Maxima Supression
+Sigma = 4.47898
+116 Interest Points in Non-Maxima Supression
+Sigma = 5.37477
+50 Interest Points in Non-Maxima Supression
+Sigma = 6.44973
+12 Interest Points in Non-Maxima Supression
+Sigma = 7.73967
+0 Interest Points in Non-Maxima Supression
+Sigma = 9.2876
+0 Interest Points in Non-Maxima Supression
+Sigma = 11.1451
+0 Interest Points in Non-Maxima Supression
+Sigma = 13.3742
+0 Interest Points in Non-Maxima Supression
+Sigma = 16.049
+0 Interest Points in Non-Maxima Supression
+Sigma = 19.2588
+0 Interest Points in Non-Maxima Supression
+Sigma = 23.1105
+0 Interest Points in Non-Maxima Supression
+Sigma = 27.7326
+0 Interest Points in Non-Maxima Supression
+Sigma = 33.2792
+0 Interest Points in Non-Maxima Supression
+Computing Harris Corners with Difference of Gaussian Threshold . . .
+Sigma = 1.5
+174 Interest Points in Scale Non-Maxima Supression
+Sigma = 1.8
+13 Interest Points in Scale Non-Maxima Supression
+Sigma = 2.16
+15 Interest Points in Scale Non-Maxima Supression
+Sigma = 2.592
+4 Interest Points in Scale Non-Maxima Supression
+Sigma = 3.1104
+48 Interest Points in Scale Non-Maxima Supression
+Sigma = 3.73248
+11 Interest Points in Scale Non-Maxima Supression
+Sigma = 4.47898
+1 Interest Points in Scale Non-Maxima Supression
+Sigma = 5.37477
+9 Interest Points in Scale Non-Maxima Supression
+Sigma = 6.44973
+0 Interest Points in Scale Non-Maxima Supression
+Sigma = 7.73967
+4 Interest Points in Scale Non-Maxima Supression
+Sigma = 9.2876
+2 Interest Points in Scale Non-Maxima Supression
+Sigma = 11.1451
+2 Interest Points in Scale Non-Maxima Supression
+Sigma = 13.3742
+1 Interest Points in Scale Non-Maxima Supression
+Sigma = 16.049
+1 Interest Points in Scale Non-Maxima Supression
+Sigma = 19.2588
+0 Interest Points in Scale Non-Maxima Supression
+Sigma = 23.1105
+0 Interest Points in Scale Non-Maxima Supression
+Sigma = 27.7326
+0 Interest Points in Scale Non-Maxima Supression
+Saving Overlay Images to Disk . . .
+./a.out Graf/img1
+Computing Gaussian Scale Space . . .
+Computing Difference of Gaussian Scale Space . . .
+Computing Harris Corners . . .
+Sigma = 1.5
+15094 Interest Points in R-Image
+Sigma = 1.8
+22128 Interest Points in R-Image
+Sigma = 2.16
+32502 Interest Points in R-Image
+Sigma = 2.592
+48661 Interest Points in R-Image
+Sigma = 3.1104
+68532 Interest Points in R-Image
+Sigma = 3.73248
+96162 Interest Points in R-Image
+Sigma = 4.47898
+132433 Interest Points in R-Image
+Sigma = 5.37477
+175651 Interest Points in R-Image
+Sigma = 6.44973
+210843 Interest Points in R-Image
+Sigma = 7.73967
+235186 Interest Points in R-Image
+Sigma = 9.2876
+265174 Interest Points in R-Image
+Sigma = 11.1451
+305361 Interest Points in R-Image
+Sigma = 13.3742
+350971 Interest Points in R-Image
+Sigma = 16.049
+404505 Interest Points in R-Image
+Sigma = 19.2588
+455231 Interest Points in R-Image
+Sigma = 23.1105
+484160 Interest Points in R-Image
+Sigma = 27.7326
+494481 Interest Points in R-Image
+Sigma = 33.2792
+502849 Interest Points in R-Image
+Computing Harris Corner with Threshold . . .
+Sigma = 1.5
+750 Interest Points in Non-Maxima Supression
+Sigma = 1.8
+706 Interest Points in Non-Maxima Supression
+Sigma = 2.16
+678 Interest Points in Non-Maxima Supression
+Sigma = 2.592
+603 Interest Points in Non-Maxima Supression
+Sigma = 3.1104
+470 Interest Points in Non-Maxima Supression
+Sigma = 3.73248
+329 Interest Points in Non-Maxima Supression
+Sigma = 4.47898
+194 Interest Points in Non-Maxima Supression
+Sigma = 5.37477
+94 Interest Points in Non-Maxima Supression
+Sigma = 6.44973
+14 Interest Points in Non-Maxima Supression
+Sigma = 7.73967
+1 Interest Points in Non-Maxima Supression
+Sigma = 9.2876
+0 Interest Points in Non-Maxima Supression
+Sigma = 11.1451
+0 Interest Points in Non-Maxima Supression
+Sigma = 13.3742
+0 Interest Points in Non-Maxima Supression
+Sigma = 16.049
+0 Interest Points in Non-Maxima Supression
+Sigma = 19.2588
+0 Interest Points in Non-Maxima Supression
+Sigma = 23.1105
+0 Interest Points in Non-Maxima Supression
+Sigma = 27.7326
+0 Interest Points in Non-Maxima Supression
+Sigma = 33.2792
+0 Interest Points in Non-Maxima Supression
+Computing Harris Corners with Difference of Gaussian Threshold . . .
+Sigma = 1.5
+50 Interest Points in Scale Non-Maxima Supression
+Sigma = 1.8
+4 Interest Points in Scale Non-Maxima Supression
+Sigma = 2.16
+21 Interest Points in Scale Non-Maxima Supression
+Sigma = 2.592
+3 Interest Points in Scale Non-Maxima Supression
+Sigma = 3.1104
+70 Interest Points in Scale Non-Maxima Supression
+Sigma = 3.73248
+11 Interest Points in Scale Non-Maxima Supression
+Sigma = 4.47898
+10 Interest Points in Scale Non-Maxima Supression
+Sigma = 5.37477
+36 Interest Points in Scale Non-Maxima Supression
+Sigma = 6.44973
+5 Interest Points in Scale Non-Maxima Supression
+Sigma = 7.73967
+18 Interest Points in Scale Non-Maxima Supression
+Sigma = 9.2876
+6 Interest Points in Scale Non-Maxima Supression
+Sigma = 11.1451
+13 Interest Points in Scale Non-Maxima Supression
+Sigma = 13.3742
+7 Interest Points in Scale Non-Maxima Supression
+Sigma = 16.049
+6 Interest Points in Scale Non-Maxima Supression
+Sigma = 19.2588
+2 Interest Points in Scale Non-Maxima Supression
+Sigma = 23.1105
+3 Interest Points in Scale Non-Maxima Supression
+Sigma = 27.7326
+1 Interest Points in Scale Non-Maxima Supression
+Saving Overlay Images to Disk . . .
+./a.out Graf/img3
+Computing Gaussian Scale Space . . .
+Computing Difference of Gaussian Scale Space . . .
+Computing Harris Corners . . .
+Sigma = 1.5
+22974 Interest Points in R-Image
+Sigma = 1.8
+31170 Interest Points in R-Image
+Sigma = 2.16
+42348 Interest Points in R-Image
+Sigma = 2.592
+62221 Interest Points in R-Image
+Sigma = 3.1104
+90811 Interest Points in R-Image
+Sigma = 3.73248
+129363 Interest Points in R-Image
+Sigma = 4.47898
+176740 Interest Points in R-Image
+Sigma = 5.37477
+217158 Interest Points in R-Image
+Sigma = 6.44973
+268756 Interest Points in R-Image
+Sigma = 7.73967
+326512 Interest Points in R-Image
+Sigma = 9.2876
+375858 Interest Points in R-Image
+Sigma = 11.1451
+405306 Interest Points in R-Image
+Sigma = 13.3742
+432629 Interest Points in R-Image
+Sigma = 16.049
+461509 Interest Points in R-Image
+Sigma = 19.2588
+483947 Interest Points in R-Image
+Sigma = 23.1105
+498123 Interest Points in R-Image
+Sigma = 27.7326
+508728 Interest Points in R-Image
+Sigma = 33.2792
+510821 Interest Points in R-Image
+Computing Harris Corner with Threshold . . .
+Sigma = 1.5
+1052 Interest Points in Non-Maxima Supression
+Sigma = 1.8
+950 Interest Points in Non-Maxima Supression
+Sigma = 2.16
+843 Interest Points in Non-Maxima Supression
+Sigma = 2.592
+773 Interest Points in Non-Maxima Supression
+Sigma = 3.1104
+584 Interest Points in Non-Maxima Supression
+Sigma = 3.73248
+412 Interest Points in Non-Maxima Supression
+Sigma = 4.47898
+227 Interest Points in Non-Maxima Supression
+Sigma = 5.37477
+101 Interest Points in Non-Maxima Supression
+Sigma = 6.44973
+10 Interest Points in Non-Maxima Supression
+Sigma = 7.73967
+0 Interest Points in Non-Maxima Supression
+Sigma = 9.2876
+0 Interest Points in Non-Maxima Supression
+Sigma = 11.1451
+0 Interest Points in Non-Maxima Supression
+Sigma = 13.3742
+0 Interest Points in Non-Maxima Supression
+Sigma = 16.049
+0 Interest Points in Non-Maxima Supression
+Sigma = 19.2588
+0 Interest Points in Non-Maxima Supression
+Sigma = 23.1105
+0 Interest Points in Non-Maxima Supression
+Sigma = 27.7326
+0 Interest Points in Non-Maxima Supression
+Sigma = 33.2792
+0 Interest Points in Non-Maxima Supression
+Computing Harris Corners with Difference of Gaussian Threshold . . .
+Sigma = 1.5
+68 Interest Points in Scale Non-Maxima Supression
+Sigma = 1.8
+11 Interest Points in Scale Non-Maxima Supression
+Sigma = 2.16
+20 Interest Points in Scale Non-Maxima Supression
+Sigma = 2.592
+1 Interest Points in Scale Non-Maxima Supression
+Sigma = 3.1104
+84 Interest Points in Scale Non-Maxima Supression
+Sigma = 3.73248
+9 Interest Points in Scale Non-Maxima Supression
+Sigma = 4.47898
+9 Interest Points in Scale Non-Maxima Supression
+Sigma = 5.37477
+30 Interest Points in Scale Non-Maxima Supression
+Sigma = 6.44973
+8 Interest Points in Scale Non-Maxima Supression
+Sigma = 7.73967
+16 Interest Points in Scale Non-Maxima Supression
+Sigma = 9.2876
+6 Interest Points in Scale Non-Maxima Supression
+Sigma = 11.1451
+12 Interest Points in Scale Non-Maxima Supression
+Sigma = 13.3742
+2 Interest Points in Scale Non-Maxima Supression
+Sigma = 16.049
+2 Interest Points in Scale Non-Maxima Supression
+Sigma = 19.2588
+0 Interest Points in Scale Non-Maxima Supression
+Sigma = 23.1105
+0 Interest Points in Scale Non-Maxima Supression
+Sigma = 27.7326
+0 Interest Points in Scale Non-Maxima Supression
+Saving Overlay Images to Disk . . .
+./a.out Graf/img5
+Computing Gaussian Scale Space . . .
+Computing Difference of Gaussian Scale Space . . .
+Computing Harris Corners . . .
+Sigma = 1.5
+21933 Interest Points in R-Image
+Sigma = 1.8
+37142 Interest Points in R-Image
+Sigma = 2.16
+57136 Interest Points in R-Image
+Sigma = 2.592
+80594 Interest Points in R-Image
+Sigma = 3.1104
+106034 Interest Points in R-Image
+Sigma = 3.73248
+136373 Interest Points in R-Image
+Sigma = 4.47898
+167355 Interest Points in R-Image
+Sigma = 5.37477
+196727 Interest Points in R-Image
+Sigma = 6.44973
+230648 Interest Points in R-Image
+Sigma = 7.73967
+267188 Interest Points in R-Image
+Sigma = 9.2876
+288571 Interest Points in R-Image
+Sigma = 11.1451
+309807 Interest Points in R-Image
+Sigma = 13.3742
+333889 Interest Points in R-Image
+Sigma = 16.049
+352802 Interest Points in R-Image
+Sigma = 19.2588
+364644 Interest Points in R-Image
+Sigma = 23.1105
+371228 Interest Points in R-Image
+Sigma = 27.7326
+363617 Interest Points in R-Image
+Sigma = 33.2792
+327082 Interest Points in R-Image
+Computing Harris Corner with Threshold . . .
+Sigma = 1.5
+1089 Interest Points in Non-Maxima Supression
+Sigma = 1.8
+1132 Interest Points in Non-Maxima Supression
+Sigma = 2.16
+1082 Interest Points in Non-Maxima Supression
+Sigma = 2.592
+923 Interest Points in Non-Maxima Supression
+Sigma = 3.1104
+620 Interest Points in Non-Maxima Supression
+Sigma = 3.73248
+377 Interest Points in Non-Maxima Supression
+Sigma = 4.47898
+192 Interest Points in Non-Maxima Supression
+Sigma = 5.37477
+67 Interest Points in Non-Maxima Supression
+Sigma = 6.44973
+7 Interest Points in Non-Maxima Supression
+Sigma = 7.73967
+2 Interest Points in Non-Maxima Supression
+Sigma = 9.2876
+0 Interest Points in Non-Maxima Supression
+Sigma = 11.1451
+0 Interest Points in Non-Maxima Supression
+Sigma = 13.3742
+0 Interest Points in Non-Maxima Supression
+Sigma = 16.049
+0 Interest Points in Non-Maxima Supression
+Sigma = 19.2588
+0 Interest Points in Non-Maxima Supression
+Sigma = 23.1105
+0 Interest Points in Non-Maxima Supression
+Sigma = 27.7326
+0 Interest Points in Non-Maxima Supression
+Sigma = 33.2792
+0 Interest Points in Non-Maxima Supression
+Computing Harris Corners with Difference of Gaussian Threshold . . .
+Sigma = 1.5
+62 Interest Points in Scale Non-Maxima Supression
+Sigma = 1.8
+11 Interest Points in Scale Non-Maxima Supression
+Sigma = 2.16
+20 Interest Points in Scale Non-Maxima Supression
+Sigma = 2.592
+4 Interest Points in Scale Non-Maxima Supression
+Sigma = 3.1104
+76 Interest Points in Scale Non-Maxima Supression
+Sigma = 3.73248
+11 Interest Points in Scale Non-Maxima Supression
+Sigma = 4.47898
+14 Interest Points in Scale Non-Maxima Supression
+Sigma = 5.37477
+22 Interest Points in Scale Non-Maxima Supression
+Sigma = 6.44973
+6 Interest Points in Scale Non-Maxima Supression
+Sigma = 7.73967
+5 Interest Points in Scale Non-Maxima Supression
+Sigma = 9.2876
+0 Interest Points in Scale Non-Maxima Supression
+Sigma = 11.1451
+1 Interest Points in Scale Non-Maxima Supression
+Sigma = 13.3742
+0 Interest Points in Scale Non-Maxima Supression
+Sigma = 16.049
+1 Interest Points in Scale Non-Maxima Supression
+Sigma = 19.2588
+0 Interest Points in Scale Non-Maxima Supression
+Sigma = 23.1105
+0 Interest Points in Scale Non-Maxima Supression
+Sigma = 27.7326
+0 Interest Points in Scale Non-Maxima Supression
+Saving Overlay Images to Disk . . .

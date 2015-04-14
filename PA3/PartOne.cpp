@@ -166,9 +166,7 @@ P6PPM computeCornerOverlayImage( const P5PGM& src, const P5PGM& corners )
 			// Check if greater than 0
 			if( corners.at(i,j) > 0 )
 			{
-				result.at(i,j,0) = 0;
-				result.at(i,j,1) = 255;
-				result.at(i,j,2) = 0;
+				result.drawCrossAt( i, j, 0, 255, 0, 3 );
 			}
 		}
 	}

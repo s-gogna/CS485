@@ -6,14 +6,6 @@
 #include "P6PPM.cpp"
 using namespace std;
 
-// Structs
-struct ScaleImage
-{
-	double sigmaI;
-	double sigmaD;
-	P5PGM image;
-};
-
 // Functions
 P5PGM computeRImage( double, const P5PGM&, const P5PGM&, const P5PGM& );
 
@@ -51,7 +43,7 @@ int main(int argc, char** argv)
 	P5PGM empty( image.getHeight(), image.getWidth() );
 
 	// Loop and fill the Gaussian Scale Space
-	cout << "Filling Gaussian Scale Space . . ." << endl;
+	cout << "Computing Gaussian Scale Space . . ." << endl;
 	for( int m = 0; m < 18; ++m )
 	{
 		// Convolve and save
@@ -65,7 +57,7 @@ int main(int argc, char** argv)
 	}
 
 	// Loop and fill the Difference of Gaussian Scale Space
-	cout << "Filling Difference of Gaussian Scale Space . . ." << endl;
+	cout << "Computing Difference of Gaussian Scale Space . . ." << endl;
 	for( int m = 0; m < 17; ++m )
 	{
 		// Subtract and save
@@ -77,11 +69,12 @@ int main(int argc, char** argv)
 	}
 
 	// Loop and fill the Harris Corners for each sigma in the Gauss Scale Space
-	cout << "Filling Harris Corners Space . . ." << endl;
+	cout << "Computing Harris Corners . . ." << endl;
 	for( int m = 0; m < 18; ++m )
 	{
 		// Compute the Harris Corner Image
 		double sigmaI = 1.5 * pow( 1.2, m );
+		cout << "Sigma = " << 1.5 * pow( 1.2, m ) << endl;
 		harrisCorners[m] = computeHarrisCornerImage( 0.7 * sigmaI, sigmaI, image );
 
 		// Write the image
@@ -90,10 +83,11 @@ int main(int argc, char** argv)
 	}
 
 	// Loop and perform 3x3 Maxima Thresholding for each Harris Corner Image
-	cout << "Filling Harris Corner Threshold Space . . ." << endl;
+	cout << "Computing Harris Corner with Threshold . . ." << endl;
 	for( int m = 0; m < 18; ++m )
 	{
 		// Compute the Harris Corner Maxima Image
+		cout << "Sigma = " << 1.5 * pow( 1.2, m ) << endl;
 		harrisCornersMaxima[m] = computeLocalMaximaImage( harrisCorners[m] );
 
 		// Write the image
@@ -102,10 +96,11 @@ int main(int argc, char** argv)
 	}
 
 	// Loop and perform 3x3x3 Maxima Thresholding for successive levels of the DoG
-	cout << "Filling Difference of Gaussian Threshold Space . . ." << endl;
+	cout << "Computing Harris Corners with Difference of Gaussian Threshold . . ." << endl;
 	for( int m = 0; m < 17; ++m )
 	{
 		// Compute the Harris Corner Maxima Image
+		cout << "Sigma = " << 1.5 * pow( 1.2, m ) << endl;
 		if( m == 0 )
 		{
 			cornerDiffGaussMaxima[m] = computeLocalScaleMaximaImage( harrisCorners[0], empty, diffGauss[0], diffGauss[1] );
@@ -125,21 +120,21 @@ int main(int argc, char** argv)
 	}
 
 	// Print the overlay images
-	cout << "Printing Overlay Images . . ." << endl;
+	cout << "Saving Overlay Images to Disk . . ." << endl;
 	for( int m = 0; m < 17; ++m )
 	{
 		// Compute the overlay image
 		sprintf(buf, "%d", m);
 		computeCornerOverlayImage( image, cornerDiffGaussMaxima[m].normalize(), 1.5 * pow( 1.2, m ) ).write( 
-			(filename + "_Overlay_N" + string(buf) + ".pgm").c_str() );
+			(filename + "_Overlay_N" + string(buf) + ".ppm").c_str() );
 	}
 	
-
 	// Deallocate
 	delete[] gauss;
 	delete[] diffGauss;
 	delete[] harrisCorners;
 	delete[] harrisCornersMaxima;
+	delete[] cornerDiffGaussMaxima;
 
 	// Return
 	return 0;
@@ -170,15 +165,24 @@ P5PGM computeRImage( double alpha, const P5PGM& Ix2, const P5PGM& Iy2, const P5P
 	}
 
 	// Loop again and threshold
+	int count = 0;
 	max = max * 0.01;
 	for( int i = 0; i < height; ++i )
 	{
 		for( int j = 0; j < width; ++j )
 		{
-			// If above thresh
-			if( result.at(i,j) <= max ) { result.at(i,j) = 0.0; }
+			// If below thresh
+			if( result.at(i,j) <= max ) 
+			{ 
+				result.at(i,j) = 0.0; 
+			}
+			else
+			{
+				count++;
+			}
 		}
-	} 
+	}
+	cout << count << " Interest Points in R-Image" << endl;
 
 	// Return
 	return result;
@@ -192,6 +196,7 @@ P5PGM computeLocalMaximaImage( const P5PGM& src )
 	P5PGM result( height, width );
 
 	// Loop through image
+	int count = 0;
 	for( int i = 0; i < height; ++i )
 	{
 		for( int j = 0; j < width; ++j )
@@ -219,9 +224,11 @@ P5PGM computeLocalMaximaImage( const P5PGM& src )
 			else
 			{
 				result.at(i,j) = max;
+				count++;
 			}
 		}
 	}
+	cout << count << " Interest Points in Non-Maxima Supression" << endl;
 
 	// Return
 	return result;
@@ -235,6 +242,7 @@ P5PGM computeLocalScaleMaximaImage( P5PGM& corners, const P5PGM& below, const P5
 	P5PGM result( height, width );
 
 	// Loop through image
+	int count = 0;
 	for( int i = 0; i < height; ++i )
 	{
 		for( int j = 0; j < width; ++j )
@@ -267,10 +275,12 @@ P5PGM computeLocalScaleMaximaImage( P5PGM& corners, const P5PGM& below, const P5
 				else
 				{
 					result.at(i,j) = max;
+					count++;
 				}
 			}
 		}
 	}
+	cout << count << " Interest Points in Scale Non-Maxima Supression" << endl;
 
 	// Return
 	return result;
