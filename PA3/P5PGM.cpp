@@ -19,7 +19,6 @@ class P5PGM
 
 		void read( const char* );
 		void write( const char* );
-		void normalizedWrite( const char* );
 
 		P5PGM convolve( const Mask& );
 		P5PGM convolveX( const Mask& );
@@ -27,6 +26,8 @@ class P5PGM
 
 		P5PGM multiply( const P5PGM& );
 		P5PGM subtract( const P5PGM& );
+
+		P5PGM normalize();
 
 		double& at( int row, int col ) const { return data[row][col]; }
 
@@ -169,37 +170,6 @@ void P5PGM::write( const char* filename )
 	}
 }
 
-void P5PGM::normalizedWrite( const char* filename )
-{
-	// Initialize variables
-	ofstream outfile(filename);
-
-	// Output
-	outfile << "P5\n" << width << ' ' << height << '\n' << 255 << '\n';
-
-	// Loop through and get the neccesary information
-	double min = 0;
-	double max = 0;
-	for( int i = 0; i < height; ++i )
-	{
-		for( int j = 0; j < width; ++j )
-		{
-			if( data[i][j] > max ) { max = data[i][j]; }
-			if( data[i][j] < min ) { min = data[i][j]; }
-		}
-	}
-
-	// Loop and write
-	for( int i = 0; i < height; ++i )
-	{
-		for( int j = 0; j < width; ++j )
-		{
-			double normVal = (255.0 / (max - min)) * (data[i][j] - min);
-			outfile << (unsigned char) normVal;
-		}
-	}
-}
-
 P5PGM P5PGM::convolve( const Mask& mask )
 {
 	// Initialize variables
@@ -330,6 +300,36 @@ P5PGM P5PGM::subtract( const P5PGM& src )
 		for( int j = 0; j < width; ++j )
 		{
 			result.data[i][j] = data[i][j] - src.data[i][j];
+		}
+	}
+
+	// Return
+	return result;
+}
+
+P5PGM P5PGM::normalize()
+{
+	// Initialize variables
+	P5PGM result( height, width );
+
+	// Loop through and get the neccesary information
+	double min = 0;
+	double max = 0;
+	for( int i = 0; i < height; ++i )
+	{
+		for( int j = 0; j < width; ++j )
+		{
+			if( data[i][j] > max ) { max = data[i][j]; }
+			if( data[i][j] < min ) { min = data[i][j]; }
+		}
+	}
+
+	// Loop and write
+	for( int i = 0; i < height; ++i )
+	{
+		for( int j = 0; j < width; ++j )
+		{
+			result.data[i][j] = (255.0 / (max - min)) * (data[i][j] - min);
 		}
 	}
 

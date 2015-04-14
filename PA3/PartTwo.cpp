@@ -19,9 +19,9 @@ P5PGM computeRImage( double, const P5PGM&, const P5PGM&, const P5PGM& );
 
 P5PGM computeLocalMaximaImage( const P5PGM& );
 
-P5PGM computeLocalScaleMaximaImage( const P5PGM&, const P5PGM&, const P5PGM& );
+P5PGM computeLocalScaleMaximaImage( P5PGM&, const P5PGM&, const P5PGM&, const P5PGM& );
 
-P6PPM computeCornerOverlayImage( const P5PGM&, const P5PGM& );
+P6PPM computeCornerOverlayImage( const P5PGM&, const P5PGM&, double );
 
 P5PGM computeHarrisCornerImage( double, double, P5PGM& );
 
@@ -42,9 +42,9 @@ int main(int argc, char** argv)
 	P5PGM image;
 	P5PGM* gauss = new P5PGM[18];
 	P5PGM* diffGauss = new P5PGM[17];
-	P5PGM* diffGaussMaxima = new P5PGM[17];
 	P5PGM* harrisCorners = new P5PGM[18];
 	P5PGM* harrisCornersMaxima = new P5PGM[18];
+	P5PGM* cornerDiffGaussMaxima = new P5PGM[17];
 
 	// Read the image
 	image.read( (filename + ".pgm").c_str() );
@@ -61,7 +61,7 @@ int main(int argc, char** argv)
 
 		// Write the image
 		sprintf(buf, "%d", m);
-//		gauss[m].write( (filename + "_Gauss_N" + string(buf) + ".pgm").c_str() );
+		gauss[m].normalize().write( (filename + "_Gauss_N" + string(buf) + ".pgm").c_str() );
 	}
 
 	// Loop and fill the Difference of Gaussian Scale Space
@@ -69,11 +69,11 @@ int main(int argc, char** argv)
 	for( int m = 0; m < 17; ++m )
 	{
 		// Subtract and save
-		diffGauss[m] = gauss[m].subtract( gauss[m+1] );
+		diffGauss[m] = gauss[m+1].subtract( gauss[m] );
 
 		// Write the image
 		sprintf(buf, "%d", m);
-		diffGauss[m].normalizedWrite( (filename + "_DoGauss_N" + string(buf) + ".pgm").c_str() );
+		diffGauss[m].normalize().write( (filename + "_DoGauss_N" + string(buf) + ".pgm").c_str() );
 	}
 
 	// Loop and fill the Harris Corners for each sigma in the Gauss Scale Space
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 
 		// Write the image
 		sprintf(buf, "%d", m);
-//		harrisCorners[m].write( (filename + "_HarrisCorners_N" + string(buf) + ".pgm").c_str() );
+		harrisCorners[m].normalize().write( (filename + "_HarrisCorners_N" + string(buf) + ".pgm").c_str() );
 	}
 
 	// Loop and perform 3x3 Maxima Thresholding for each Harris Corner Image
@@ -98,7 +98,7 @@ int main(int argc, char** argv)
 
 		// Write the image
 		sprintf(buf, "%d", m);
-//		harrisCornersMaxima[m].write( (filename + "_HarrisCornersMaxima_N" + string(buf) + ".pgm").c_str() );
+		harrisCornersMaxima[m].normalize().write( (filename + "_HarrisCornersMaxima_N" + string(buf) + ".pgm").c_str() );
 	}
 
 	// Loop and perform 3x3x3 Maxima Thresholding for successive levels of the DoG
@@ -108,20 +108,30 @@ int main(int argc, char** argv)
 		// Compute the Harris Corner Maxima Image
 		if( m == 0 )
 		{
-			diffGaussMaxima[m] = computeLocalScaleMaximaImage( empty, diffGauss[0], diffGauss[1] );
+			cornerDiffGaussMaxima[m] = computeLocalScaleMaximaImage( harrisCorners[0], empty, diffGauss[0], diffGauss[1] );
 		}
 		else if( m == 16 )
 		{
-			diffGaussMaxima[m] = computeLocalScaleMaximaImage( diffGauss[15], diffGauss[16], empty );
+			cornerDiffGaussMaxima[m] = computeLocalScaleMaximaImage( harrisCorners[16], diffGauss[15], diffGauss[16], empty );
 		}
 		else
 		{
-			diffGaussMaxima[m] = computeLocalScaleMaximaImage( diffGauss[m-1], diffGauss[m], diffGauss[m+1] );
+			cornerDiffGaussMaxima[m] = computeLocalScaleMaximaImage( harrisCorners[m], diffGauss[m-1], diffGauss[m], diffGauss[m+1] );
 		}
 
 		// Write the image
 		sprintf(buf, "%d", m);
-		diffGaussMaxima[m].normalizedWrite( (filename + "_DoGaussMaxima_N" + string(buf) + ".pgm").c_str() );
+		cornerDiffGaussMaxima[m].normalize().write( (filename + "_CornerDoGaussMaxima_N" + string(buf) + ".pgm").c_str() );
+	}
+
+	// Print the overlay images
+	cout << "Printing Overlay Images . . ." << endl;
+	for( int m = 0; m < 17; ++m )
+	{
+		// Compute the overlay image
+		sprintf(buf, "%d", m);
+		computeCornerOverlayImage( image, cornerDiffGaussMaxima[m].normalize(), 1.5 * pow( 1.2, m ) ).write( 
+			(filename + "_Overlay_N" + string(buf) + ".pgm").c_str() );
 	}
 	
 
@@ -217,7 +227,7 @@ P5PGM computeLocalMaximaImage( const P5PGM& src )
 	return result;
 }
 
-P5PGM computeLocalScaleMaximaImage( const P5PGM& below, const P5PGM& src, const P5PGM& above )
+P5PGM computeLocalScaleMaximaImage( P5PGM& corners, const P5PGM& below, const P5PGM& src, const P5PGM& above )
 {
 	// Initialize variables
 	int width = src.getWidth();
@@ -229,31 +239,35 @@ P5PGM computeLocalScaleMaximaImage( const P5PGM& below, const P5PGM& src, const 
 	{
 		for( int j = 0; j < width; ++j )
 		{
-			// Initialize some more variables
-			double max = 0.0;
-
-			// Find the max in a 3x3x3 neighborhood
-			for( int k = -1; k <= 1; ++k )
+			// If there is a corner in the image
+			if( corners.at(i,j) > 0 )
 			{
-				for( int l = -1; l <= 1; ++l )
+				// Initialize some more variables
+				double max = -1000000;
+
+				// Find the max in a 3x3x3 neighborhood
+				for( int k = -1; k <= 1; ++k )
 				{
-					if( (i+k) >= 0 && (i+k) < height && (j+l) >= 0 && (j+l) < width )
+					for( int l = -1; l <= 1; ++l )
 					{
-						if( above.at(i+k, j+l) > max ) { max = above.at(i+k, j+l); }
-						if( src.at(i+k, j+l) > max ) { max = src.at(i+k, j+l); }
-						if( below.at(i+k, j+l) > max ) { max = below.at(i+k, j+l); }
+						if( (i+k) >= 0 && (i+k) < height && (j+l) >= 0 && (j+l) < width )
+						{
+							if( above.at(i+k, j+l) > max ) { max = above.at(i+k, j+l); }
+							if( src.at(i+k, j+l) > max ) { max = src.at(i+k, j+l); }
+							if( below.at(i+k, j+l) > max ) { max = below.at(i+k, j+l); }
+						}
 					}
 				}
-			}
 
-			// If it was not the max, reject corner
-			if( src.at(i,j) != max )
-			{
-				result.at(i,j) = 0;
-			}
-			else
-			{
-				result.at(i,j) = max;
+				// If it was not the max, reject corner
+				if( src.at(i,j) != max || src.at(i,j) < 10 )
+				{
+					result.at(i,j) = 0;
+				}
+				else
+				{
+					result.at(i,j) = max;
+				}
 			}
 		}
 	}
@@ -262,7 +276,7 @@ P5PGM computeLocalScaleMaximaImage( const P5PGM& below, const P5PGM& src, const 
 	return result;
 }
 
-P6PPM computeCornerOverlayImage( const P5PGM& src, const P5PGM& corners )
+P6PPM computeCornerOverlayImage( const P5PGM& src, const P5PGM& corners, double sigma )
 {
 	// Initialize
 	int width = src.getWidth();
@@ -277,9 +291,8 @@ P6PPM computeCornerOverlayImage( const P5PGM& src, const P5PGM& corners )
 			// Check if greater than 0
 			if( corners.at(i,j) > 0 )
 			{
-				result.at(i,j,0) = 0;
-				result.at(i,j,1) = 255;
-				result.at(i,j,2) = 0;
+				result.drawCircleAt( i, j, 0, 255, 0, 2 * sigma );
+				result.drawCrossAt( i, j, 0, 255, 0, 3 );
 			}
 		}
 	}

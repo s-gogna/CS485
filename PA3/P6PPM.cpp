@@ -233,7 +233,7 @@ void P6PPM::drawCircleAt( int row, int col, int r, int g, int b, double radius )
 			if( row+i >= 0 && row+i < height && col+j >= 0 && col+j < width )
 			{
 				// Check if the value is on the circle
-				if( ((intRadius*intRadius) - (i*i + j*j)) > 0.5 )
+				if( (i*i + j*j) <= (intRadius * intRadius) && (i*i + j*j) >= ((intRadius-1) * (intRadius-1)) )
 				{
 					// Change the color of the pixel
 					data[row + i][col + j][0] = r;

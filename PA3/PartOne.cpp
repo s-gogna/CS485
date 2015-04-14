@@ -43,9 +43,9 @@ int main(int argc, char** argv)
 	P5PGM IxIy = Ix.multiply(Iy);
 
 	// Print the images
-	Ix2.write( (filename + "_Ix2.pgm").c_str() );
-	Iy2.write( (filename + "_Iy2.pgm").c_str() );
-	IxIy.write( (filename + "_IxIy.pgm").c_str() );
+	Ix2.normalize().write( (filename + "_Ix2.pgm").c_str() );
+	Iy2.normalize().write( (filename + "_Iy2.pgm").c_str() );
+	IxIy.normalize().write( (filename + "_IxIy.pgm").c_str() );
 
 	// Convolve Ix^2 , Iy^2 , and IxIy with a larger gaussian
 	sigmaI.buildGauss( 1.5 );
@@ -55,14 +55,14 @@ int main(int argc, char** argv)
 
 	// Compute the R(Aw) image
 	P5PGM rImage = computeRImage( 0.06, Ix2_Aw, Iy2_Aw, IxIy_Aw );
-	rImage.write( (filename + "_R(Aw).pgm").c_str() );
+	rImage.normalize().write( (filename + "_R(Aw).pgm").c_str() );
 
 	// Compute the R(Aw) image after a 3x3 local maxima
 	P5PGM rImageMaxima = computeLocalMaximaImage( rImage );
-	rImageMaxima.write( (filename + "_R(Aw)LocalMaxima.pgm").c_str() );
+	rImageMaxima.normalize().write( (filename + "_R(Aw)LocalMaxima.pgm").c_str() );
 
 	// Get the corner overlay image
-	P6PGM overlayImage = computeCornerOverlayImage( image, rImageMaxima );
+	P6PPM overlayImage = computeCornerOverlayImage( image, rImageMaxima );
 	overlayImage.write( (filename + "_CornerOverlay.ppm").c_str() );
 
 	// Return
