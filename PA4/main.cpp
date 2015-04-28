@@ -12,6 +12,10 @@ vector<Point2f> readImagePoints(const char[]);
 
 vector<Point3f> readWorldPoints(const char[]);
 
+Mat convertPoint3fToMat(const Point3f&);
+
+Mat buildExtrinsicParams( const Mat&, const Mat& );
+
 // Main Program
 int main()
 {
@@ -41,15 +45,34 @@ int main()
 		cameraMatrix, distCoeffs,
 		rvecs, tvecs );
 
-	// Use the matrix to calculate the projection error
-	// Note: Not working right now. I'm not sure how to use cameraMatrix to project back into image coordinates.
-	pointToMat.at<double>(0) = objCoords[1][1].x;
-	pointToMat.at<double>(1) = objCoords[1][1].y;
-	pointToMat.at<double>(2) = objCoords[1][1].z;
-	cout << cameraMatrix << endl;
-	cout << pointToMat << endl;
-	cout << cameraMatrix * pointToMat << endl;
-	cout << imgCoords[1][1] << endl;
+	// Loop through the 15 images
+//	for( int i = 0; i < 15; ++i )
+	for( int i = 0; i < 1; ++i )
+	{
+		// Calculate the rotation matrix transposed
+		Mat rotMat;
+		Rodrigues( rvecs[i], rotMat );
+
+		// Calculate the extrinsic parameters
+		Mat extrinsicParams = buildExtrinsicParams( rotMat, tvecs[i] );
+		Mat projMatrix = cameraMatrix * extrinsicParams;
+
+		// Loop through the 96 points
+//		for( int j = 0; j < 96; ++j )
+		for( int j = 0; j < 2; ++j )
+		{
+			// Convert the Point3f world coordinate to a Mat with homogenous coordinates
+			Mat pointDiff = convertPoint3fToMat( objCoords[i][j] );
+cout << pointDiff << endl;
+			// Multiply with the rotMatTrans
+			Mat imgVal = projMatrix * pointDiff;
+			//cout << imgVal/imgVal.at<double>(2) << endl;
+			cout << imgVal << endl;
+
+			// Print out the actual coordinate values
+			cout << imgCoords[i][j] << endl;
+		}
+	}
 
 	// Return
 	return 0;
@@ -97,3 +120,41 @@ vector<Point3f> readWorldPoints(const char filename[])
 	// Return
 	return result;
 }
+
+Mat convertPoint3fToMat(const Point3f& point)
+{
+	// Create a matrix
+	Mat res(4, 1, CV_64FC1);
+
+	// Copy the values
+	res.at<double>(0) = point.x;
+	res.at<double>(1) = point.y;
+	res.at<double>(2) = point.z;
+	res.at<double>(3) = 1;
+
+	// Return
+	return res;
+}
+
+Mat buildExtrinsicParams( const Mat& rotMat, const Mat& tvec )
+{
+	// Initialize variables
+	Mat res( 3, 4, CV_64FC1 );
+
+	// Copy the rotation matrix
+	rotMat.col(0).copyTo( res.col(0) );
+	rotMat.col(1).copyTo( res.col(1) );
+	rotMat.col(2).copyTo( res.col(2) );
+
+	// Multiply rotMat with tvec and append its negative
+	Mat temp = -( rotMat.t() * tvec );
+	temp.copyTo( res.col(3) );
+
+	// Return
+	return res;
+}
+
+
+
+
+
