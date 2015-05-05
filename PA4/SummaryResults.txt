@@ -1,0 +1,16 @@
+Image 0: 0.289775
+Image 1: 0.274134
+Image 2: 0.273236
+Image 3: 0.249002
+Image 4: 0.266986
+Image 5: 0.291165
+Image 6: 0.283195
+Image 7: 0.28653
+Image 8: 0.320945
+Image 9: 0.294734
+Image 10: 0.327822
+Image 11: 0.314313
+Image 12: 0.352102
+Image 13: 0.277747
+Image 14: 0.259884
+For all images: 0.290771
