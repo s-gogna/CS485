@@ -7,6 +7,8 @@
 using namespace std;
 using namespace cv;
 
+#define PRINT_CSV 0
+
 // Function Declaration
 vector<Point2f> readImagePoints(const char[]);
 
@@ -53,18 +55,27 @@ int main()
 		double singleImageSum = 0.0;
 		for( int j = 0; j < 96; ++j )
 		{
-			singleImageSum += sqrt( 
+			double err = sqrt( 
 				pow(output[j].x - imgCoords[i][j].x, 2) + 
 				pow(output[j].y - imgCoords[i][j].y, 2) );
+			singleImageSum += err;
+
+			#if PRINT_CSV == 1
+			cout << i << ',' << err << endl;
+			#endif
 		}
 
-		// Print the average error
-		cout << "Image " << i << ": " << singleImageSum / 96.0 << endl;
+		// Add to the multi-image error sum
 		multiImageSum += singleImageSum / 96.0;
+
+		#if PRINT_CSV == 0
+		cout << "Image " << i << ": " << singleImageSum / 96.0 << endl;
+		#endif
 	}
 
-	// Print the average error for all images
+	#if PRINT_CSV == 0
 	cout << "For all images: " << multiImageSum / 15.0 << endl;
+	#endif
 
 	// Return
 	return 0;
